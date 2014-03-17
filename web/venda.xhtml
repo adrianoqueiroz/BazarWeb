@@ -1,0 +1,108 @@
+<ui:composition template="/WEB-INF/facelets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="conteudo">
+        <div id="area_venda">
+            <h:panelGrid columns="2"> 
+                <h:panelGrid>
+                    <h:form>
+                        <p:panel header="Caixa">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Data de Abertura: " /> 
+                                <h:outputLabel value="09/03/2014" />
+                                <h:outputLabel value="Produtos vendidos: " /> 
+                                <h:outputLabel value="1111" />
+                                <h:outputLabel value="Clientes Atendidos: " /> 
+                                <h:outputLabel value="1111" />
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="2" >
+                                <p:commandButton ajax="false" value="Detalhes" />
+                                <p:commandButton ajax="false" value="Encerrar" /> 
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+
+                    <h:form>
+                        <p:panel header="Cliente">
+                            <h:panelGrid columns="2"> 
+                                <p:inputText style="width:150px;" /> 
+                                <p:commandButton ajax="false" actionListener="#{vendaBean.findClienteByCpf()}" value="Buscar" />
+
+                                <h:outputLabel value="Cliente: " />  
+                                <h:outputLabel value="#{vendaBean.clienteSelecionado.nome}" />  
+
+                                <h:outputLabel value="CPF: " />  
+                                <h:outputLabel value="#{vendaBean.clienteSelecionado.cpf}" /> 
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+
+                    <h:form>
+                        <p:panel header="Inserir Produto">
+                            <h:outputLabel value="Código do Produto: " /> 
+                            <h:panelGrid id="codProduto" columns="2"> 
+                                <p:inputText  style="width:150px;"  value="#{vendaBean.codigoProcurado}" /> 
+                                <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </h:panelGrid>
+
+                <h:panelGrid>
+
+                    <p:panel header="Carrinho de Compras">
+                        <h:form id="carrinhoCompras">
+                            <p:dataTable id="tabelaCarrinho" style="width: 600px;" 
+                                         editable="true" editMode="cell" 
+                                         scrollable="true" scrollHeight="240"  
+                                         var="itemVenda" value="#{vendaBean.vendas}">  
+
+                                <p:column headerText="Código">  
+                                    <h:outputText value="#{itemVenda.produto.codigo}" />  
+                                </p:column>  
+
+                                <p:column headerText="Produto">  
+                                    <h:outputText value="#{itemVenda.produto.nome}" />  
+                                </p:column>  
+
+                                <p:column headerText="Preço">  
+                                    <h:outputText value="R$ #{itemVenda.produto.preco}" />  
+                                </p:column>  
+
+                                <p:column headerText="Quantidade">
+                                    <p:cellEditor>  
+                                        <f:facet name="output">
+                                            <h:outputText value="#{itemVenda.quantidade}" />
+                                        </f:facet>  
+                                        <f:facet name="input">
+                                            <p:inputText value="#{itemVenda.quantidade}" label="Quantidade"/>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column>  
+                                    <p:commandButton update="tabelaCarrinho" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
+                                        <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.vendas}" /> 
+                                    </p:commandButton>  
+                                </p:column>
+
+
+                                <f:facet name="footer">
+                                    Total de Itens #{vendaBean.vendas.size()}
+                                </f:facet>
+
+                            </p:dataTable> 
+                        </h:form>
+                    </p:panel>
+
+                </h:panelGrid>
+            </h:panelGrid>
+        </div>
+    </ui:define>
+</ui:composition>
+

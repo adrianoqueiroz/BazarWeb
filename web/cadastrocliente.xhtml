@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
+            <h:outputLabel value="Nome Completo: " />
+            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.nome}" /> 
+            <h:outputLabel value="CPF: " />
+            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.cpf}" />
+            <h:outputLabel value="Email: " />  
+            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.email}"/>
+            <h:outputLabel value="Telefone: " />  
+            <p:inputText style="width:350px;"  value="#{clienteBean.novoCliente.telefone}"/>
+            <h:outputLabel value="Data de Nascimento: " />  
+            <p:inputText style="width:350px;"  value="#{clienteBean.novoCliente.dataNascimento}"/>
+
+            <h:outputText value="Sexo: " />  
+            <h:panelGrid columns="2" cellpadding="5">  
+                <p:selectOneRadio value="#{clienteBean.novoCliente.sexo}">  
+                    <f:selectItem itemLabel="Masculino" itemValue="Masculino" />  
+                    <f:selectItem itemLabel="Feminino" itemValue="Feminino" />  
+                </p:selectOneRadio>  
+            </h:panelGrid>
+
+            <p:outputLabel value="Bairro: "/>
+            <p:selectOneMenu style="width:350px;" >
+                <f:selectItem itemLabel="Selecione..."/>
+            </p:selectOneMenu>
+
+            <p:commandButton ajax="false" actionListener="#{clienteBean.create()}" value="Salvar" />
+        </h:panelGrid> 
+    </h:form>
+</html> 

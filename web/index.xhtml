@@ -1,0 +1,29 @@
+<ui:composition template="/WEB-INF/facelets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="cabecalho">
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <div id="area_venda">
+
+            <div id="div_botoes_venda">
+                <h:form>
+                    <p:commandButton styleClass="botaoPrincipal" value="Venda" action="/venda.xhtml" />
+                    <p:commandButton styleClass="botaoPrincipal" value="Cliente" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Funcionário" update=":dialogCadFuncionario" oncomplete="PF('cadFuncionario').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Estoque" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Recibo" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Relatórios" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Ajuda" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                    <p:commandButton styleClass="botaoPrincipal" value="Sair" iconPos="left"  update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

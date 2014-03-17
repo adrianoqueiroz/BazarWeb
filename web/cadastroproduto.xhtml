@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
+            <h:outputLabel value="Código: " />
+            <p:inputText style="width:250px;"  required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
+            <h:outputLabel value="Produto: " />
+            <p:inputText style="width:250px;" required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
+          <h:outputLabel value="Preço: " />  
+          <p:inputText style="width:250px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
+            <h:outputLabel value="Quantidade: " />  
+            <p:inputText style="width:250px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
+            <p:commandButton ajax="false" value="Cancelar" />
+            <p:commandButton ajax="false" actionListener="#{produtoBean.create()}" value="Salvar" />
+        </h:panelGrid>
+    </h:form>
+</html> 

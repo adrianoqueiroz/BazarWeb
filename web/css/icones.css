@@ -1,0 +1,13 @@
+
+
+.iconeCliente {  
+    background-image: url("../imagens/icon-cliente.png") !important;  
+    width: 100px;height: 100px;  
+}  
+
+.iconeSair {  
+    background-image: url("../imagens/icone-sair.png") !important;  
+    width: 50px !important;
+    height: 50px !important;
+    margin: auto auto !important;
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Bazar Web - Controle de Vendas e Estoque</title>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/icones.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/template.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/menu.css"/>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/index.css"/>
+
+        <style>
+            .ui-widget {
+                font-size: 12px !important;
+                margin: 0;
+            } 
+            .semBorda tr, .semBorda td{  
+                border: none !important;   
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
+        <div id="div_geral">
+            <div id="barra_topo">
+                <div id="barra_topo_central">
+                    <a href="index.xhtml">
+                        <img src="#{request.contextPath}/imagens/minilogo.png" alt="logo"/>
+                    </a>
+                    <span id="usuario_logado">Usuário: Administrador</span>
+                </div>
+            </div>
+
+
+            <!--cancela o float e da um espacamento de 20px entre a barra topo e o menu-->
+            <span class="clearFull div20"> <!-- --> </span>   
+
+            <h:form>
+                <p:menubar styleClass="menuBar">
+                    <p:submenu label="Venda" icon="ui-icon-cart">
+                        <p:menuitem value="Nova" url="/venda.xhtml" icon="ui-icon-cart" />
+                        <p:menuitem value="Extornar" icon="ui-icon-arrowreturn-1-w" />
+                        <p:separator />
+                        <p:menuitem value="Sair" icon="ui-icon-close" />
+                    </p:submenu>
+
+                    <p:submenu label="Produtos" icon="ui-icon-tag">
+                        <p:menuitem value="Cadastrar" update=":dialogCadProduto" oncomplete="PF('cadProduto').show();" icon="ui-icon-arrowreturnthick-1-w" />
+                        <p:menuitem value="Listar" icon="ui-icon-arrowreturnthick-1-e" />
+                        <p:menuitem value="Editar" icon="ui-icon-arrowreturnthick-1-w" />
+                    </p:submenu>
+
+                    <p:submenu label="Cadastro" icon="ui-icon-person">
+                        <p:menuitem value="Cliente" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
+                        <p:menuitem value="Funcionário" update=":dialogCadFuncionario" oncomplete="PF('cadFuncionario').show();"/>
+                    </p:submenu>
+
+                    <p:submenu label="Relatórios" icon="ui-icon-document">
+                        <p:menuitem value="Save" icon="ui-icon-disk" />
+                        <p:menuitem value="Update" icon="ui-icon-arrowrefresh-1-w" />
+                    </p:submenu>
+
+                    <p:menuitem value="Sair" url="/login.html" icon="ui-icon-close" />
+                </p:menubar>
+            </h:form>
+
+            <!--cancela o float e da um espacamento de 20px entre o menu e a div central-->
+            <span class="clearFull div20"></span>
+
+            <div id="div_central">
+                <!--conteudo do template-->
+                <ui:insert name="conteudo">
+
+                </ui:insert>
+            </div>
+
+            <!--Dialogs-->
+            <ui:include src="/dialogs.xhtml" />
+            
+            
+            
+            <span class="clearFull div20"></span>
+            
+            <footer>
+                <div id="footer_copyright">
+                    <span>© 2014 Bazar Web - Controle de Vendas e Estoque</span>
+                </div>                    
+            </footer> 
+        </div>
+
+
+    </h:body>
+</html>

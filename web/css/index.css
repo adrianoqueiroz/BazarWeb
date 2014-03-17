@@ -1,0 +1,26 @@
+/* 
+    Document   : venda
+    Created on : 23/06/2013, 22:39:30
+    Author     : Adriano
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+#div_botoes_venda{
+    margin: auto;
+    width: 760px;
+    height: 420px;
+    padding-top: 20px;
+}
+
+
+.botaoPrincipal {
+    float: left !important;
+    margin-top: 40px !important;
+    margin-left: 40px !important;
+    width: 145px !important;
+    height: 145px !important;
+}
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda"> 
+            <h:outputLabel value="Nome Completo: " />
+            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.nome}"/> 
+            <h:outputLabel value="CPF: " />
+            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.cpf}"/>
+            <h:outputLabel value="Email: " />  
+            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.email}"/>
+            <h:outputLabel value="Telefone: " />  
+            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.telefone}"/>
+            
+            <h:outputText value="Sexo: " />  
+            <h:panelGrid columns="2" cellpadding="5">  
+                <p:selectOneRadio id="sexo" value="#{funcionarioBean.funcionario.sexo}" >  
+                    <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>  
+                    <f:selectItem itemLabel="Feminino" itemValue="Feminino"/>  
+                </p:selectOneRadio>  
+            </h:panelGrid>
+
+            <h:outputLabel value="Usuário: " />  
+            <p:inputText style="width:350px;" id="usuario" value="#{funcionarioBean.funcionario.usuario}"/>
+            <h:outputLabel value="Senha: " />  
+            <p:inputText style="width:350px;" type="password" id="senha" value="#{funcionarioBean.funcionario.senha}" />
+
+            <h:outputText value="Administrador: " />  
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">  
+                <p:selectOneRadio id="administrador" value="#{funcionarioBean.funcionario.administrador}" >  
+                    <f:selectItem itemLabel="Sim" itemValue="#{true}" />  
+                    <f:selectItem itemLabel="Não" itemValue="#{false}" />  
+                </p:selectOneRadio>  
+            </h:panelGrid>        
+            <p:commandButton ajax="false" value="Salvar" actionListener="#{funcionarioBean.create()}"/>
+        </h:panelGrid>
+    </h:form>
+</html> 

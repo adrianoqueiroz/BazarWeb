@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <!--dialog cadastro funcionario-->
+    <p:dialog widgetVar="cadFuncionario"   
+              id="dialogCadFuncionario" 
+              showEffect="explode" 
+              hideEffect="explode"
+              width="500"
+              height="380" 
+              header="Novo Funcionário"  
+              modal="true"
+              resizable="false"
+              draggable="false"
+              maximizable="false"
+              closeOnEscape="true">  
+        <ui:include src="/cadastrofuncionario.xhtml" />  
+    </p:dialog>
+
+    <!--dialog cadastro cliente-->
+    <p:dialog widgetVar="cadCliente"   
+              id="dialogCadCliente" 
+              showEffect="explode" 
+              hideEffect="explode"
+              width="500"
+              height="380" 
+              header="Novo Cliente"  
+              modal="true"
+              resizable="false"
+              draggable="false"
+              maximizable="false"
+              closeOnEscape="true">  
+        <ui:include src="/cadastrocliente.xhtml" />
+    </p:dialog>   
+    
+    
+        <!--dialog cadastro procuto-->
+    <p:dialog widgetVar="cadProduto"   
+              id="dialogCadProduto" 
+              showEffect="explode" 
+              hideEffect="explode"
+              width="400"
+              height="280" 
+              header="Novo Produto"  
+              modal="true"
+              resizable="false"
+              draggable="false"
+              maximizable="false"
+              closeOnEscape="true">  
+        <ui:include src="/cadastroproduto.xhtml" />
+    </p:dialog>  
+</html>
