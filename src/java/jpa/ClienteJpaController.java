@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package jpa;
 
 import java.io.Serializable;
@@ -123,13 +122,15 @@ public class ClienteJpaController implements Serializable {
             em.close();
         }
     }
-    
-        public Cliente findClienteByCpf(String cpf) {
+
+    public Cliente findClienteByCpf(String cpf) {
         EntityManager em = getEntityManager();
         try {
             TypedQuery<Cliente> query = em.createQuery("select c from Cliente c where c.cpf = :cpf", Cliente.class);
             query.setParameter("cpf", cpf);
             return (Cliente) query.getSingleResult();
+        } catch (Exception e) {
+            return null;
         } finally {
             em.close();
         }
@@ -147,5 +148,5 @@ public class ClienteJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

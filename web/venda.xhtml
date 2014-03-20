@@ -29,15 +29,14 @@
 
                     <h:form>
                         <p:panel header="Cliente">
-                            <h:panelGrid columns="2"> 
-                                <p:inputText style="width:150px;" /> 
-                                <p:commandButton ajax="false" actionListener="#{vendaBean.findClienteByCpf()}" value="Buscar" />
+                            <h:panelGrid columns="1"> 
+                                <h:panelGrid columns="2">
+                                    <p:inputText style="width:150px;" value="#{vendaBean.cpfProcurado}" /> 
+                                    <p:commandButton ajax="false" actionListener="#{vendaBean.clientePorCpf()}" update="carrinhoCompras growl" value="Buscar" />
+                                </h:panelGrid>
 
-                                <h:outputLabel value="Cliente: " />  
-                                <h:outputLabel value="#{vendaBean.clienteSelecionado.nome}" />  
-
-                                <h:outputLabel value="CPF: " />  
-                                <h:outputLabel value="#{vendaBean.clienteSelecionado.cpf}" /> 
+                                <h:outputLabel value="Cliente: #{vendaBean.clienteSelecionado.nome}" />  
+                                <h:outputLabel value="CPF: #{vendaBean.clienteSelecionado.cpf}" />  
                             </h:panelGrid>
                         </p:panel>
                     </h:form>

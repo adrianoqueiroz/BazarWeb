@@ -32,7 +32,7 @@ public class Funcionario implements Serializable {
     private String email;
     private String usuario;
     private String senha;
-    private boolean administrador;
+    private boolean isAdmin;
 
     public Long getId() {
         return id;
@@ -100,12 +100,12 @@ public class Funcionario implements Serializable {
         this.senha = senha;
     }
 
-    public boolean isAdministrador() {
-        return administrador;
+    public boolean isIsAdmin() {
+        return isAdmin;
     }
 
-    public void setAdministrador(boolean administrador) {
-        this.administrador = administrador;
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
     
     

@@ -27,7 +27,7 @@ public class VendaBean {
     private long codigoProcurado;
     private String cpfProcurado;
     private Cliente clienteSelecionado = new Cliente();
-    
+
     ClienteBean clienteBean = new ClienteBean();
 
     private Venda novaVenda = new Venda();
@@ -131,15 +131,23 @@ public class VendaBean {
         this.novaVenda = novaVenda;
     }
 
-    public Cliente findClienteByCpf() {
+    public void clientePorCpf() {
+        FacesContext context = FacesContext.getCurrentInstance();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
         ClienteJpaController clienteJpa = new ClienteJpaController(emf);
+        Cliente clienteBuscado = clienteJpa.findClienteByCpf(cpfProcurado);
+
+        if (clienteBuscado != null) {
+            context.addMessage(null, new FacesMessage("Sucesso", "Cliente encontrado!"));
+            clienteSelecionado = clienteBuscado;
+        } else {
+            context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
+        }
         emf.close();
-        return clienteJpa.findClienteByCpf(cpfProcurado);
     }
-    
-    public void clientePorCpf(){
-        clienteSelecionado = clienteBean.findClienteByCpf();
+
+    public void clientePorCpf2() {
+        clienteSelecionado = clienteBean.findClienteByCpf(cpfProcurado);
     }
 
 }
