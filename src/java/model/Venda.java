@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -65,23 +66,43 @@ public class Venda implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.id);
+        hash = 83 * hash + Objects.hashCode(this.produto);
+        hash = 83 * hash + this.quantidade;
+        hash = 83 * hash + Float.floatToIntBits(this.desconto);
+        hash = 83 * hash + Objects.hashCode(this.dataVenda);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Venda)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        Venda other = (Venda) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Venda other = (Venda) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.produto, other.produto)) {
+            return false;
+        }
+        if (this.quantidade != other.quantidade) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.desconto) != Float.floatToIntBits(other.desconto)) {
+            return false;
+        }
+        if (!Objects.equals(this.dataVenda, other.dataVenda)) {
             return false;
         }
         return true;
     }
+
+    
 
     @Override
     public String toString() {

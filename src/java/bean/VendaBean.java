@@ -23,7 +23,6 @@ import model.Venda;
 public class VendaBean {
 
     private List<Venda> vendas;
-    private Venda vendaSelecionada;
     private long codigoProcurado;
     private String cpfProcurado;
     private Cliente clienteSelecionado = new Cliente();
@@ -44,27 +43,12 @@ public class VendaBean {
         this.vendas = vendas;
     }
 
-    public Venda getVendaSelecionada() {
-        return vendaSelecionada;
-    }
-
-    public void setVendaSelecionada(Venda vendaSelecionada) {
-        this.vendaSelecionada = vendaSelecionada;
-    }
-
     public Cliente getClienteSelecionado() {
         return clienteSelecionado;
     }
 
     public void setClienteSelecionado(Cliente clienteSelecionado) {
         this.clienteSelecionado = clienteSelecionado;
-    }
-
-    public void removeSelecionado() {
-        if (vendaSelecionada != null) {
-            vendas.remove(vendaSelecionada);
-        }
-        vendaSelecionada = null;
     }
 
     public String getCpfProcurado() {
