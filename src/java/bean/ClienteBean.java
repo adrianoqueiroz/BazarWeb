@@ -1,13 +1,8 @@
 package bean;
 
-import javax.faces.application.FacesMessage;
+import dao.ClienteDao;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import jpa.ClienteJpaController;
 import model.Cliente;
 
 /**
@@ -45,28 +40,11 @@ public class ClienteBean {
     }
 
     public void create() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        ClienteJpaController clienteJpa = new ClienteJpaController(emf);
-        clienteJpa.create(novoCliente);
-        emf.close();
+        ClienteDao clienteDao = new ClienteDao();
+        clienteDao.persist(novoCliente);
     }
 
     public Cliente findClienteByCpf(String cpfProcurado) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        ClienteJpaController clienteJpa = new ClienteJpaController(emf);
-        Cliente clienteEncontrado = null;
-        boolean inserir = true;
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        try {
-            clienteEncontrado = clienteJpa.findClienteByCpf(cpfProcurado);
-            context.addMessage(null, new FacesMessage("Sucesso", "Cliente encontrado!"));
-        } catch (Exception e) {
-            context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
-        } finally {
-            emf.close();
-        }
-
-        return clienteEncontrado;
+        return null;
     }
 }

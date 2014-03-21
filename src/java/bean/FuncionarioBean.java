@@ -9,12 +9,9 @@
  */
 package bean;
 
+import dao.FuncionarioDao;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import jpa.FuncionarioJpaController;
 import model.Funcionario;
 
 /**
@@ -22,12 +19,8 @@ import model.Funcionario;
  * @author Adriano
  */
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class FuncionarioBean {
-    Funcionario funcionarioLogado;
-
-    private String cpfProcurado;
-
     private Funcionario novoFuncionario = new Funcionario();
 
     public Funcionario getFuncionario() {
@@ -39,16 +32,7 @@ public class FuncionarioBean {
     }
 
     public void create() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        FuncionarioJpaController funcionarioJpa = new FuncionarioJpaController(emf);
-        funcionarioJpa.create(novoFuncionario);
-        emf.close();
-    }
-
-    public Funcionario findByCpf() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        FuncionarioJpaController funcionarioJpa = new FuncionarioJpaController(emf);
-        emf.close();
-        return funcionarioJpa.findFuncionarioByCpf(cpfProcurado);
+        FuncionarioDao funcionarioDao = new FuncionarioDao();
+        funcionarioDao.persist(novoFuncionario);
     }
 }

@@ -1,0 +1,122 @@
+/* 
+    Document   : login3
+    Created on : 20/06/2013, 23:43:51
+    Author     : Adriano
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#div_logo{
+    width:360px;
+    margin:25px auto 0px;
+}
+
+#logo {
+}
+
+#login_box{
+    background-color: #fdfdfd;
+    width:360px;
+    height:220px;
+    margin:50px auto 0px;
+    border-radius:5px;
+    box-shadow:0px 0px 5px black;
+}
+
+
+#login_box_label{
+    margin-bottom: 10px;
+    height:45px;
+    text-align:center;
+    font:bold 18px/45px sans-serif;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    border-bottom: 1px solid #bfc3c5;
+    color:#555555;
+    text-shadow:1px 0px 1px white;
+
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+
+}
+
+.login_box_input{
+    width:305px;
+    height:25px;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding:5px;
+
+    font:normal 16px sans-serif;
+    color:#aeaeae;
+    border-radius:3px;
+    border:1px solid #bfc4c6;
+
+}  
+
+.login_box_input:hover{
+    border-color:#7dc6dd;
+}
+
+
+#login_box_select{
+    width:220px;
+    height:35px;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding:5px;
+
+    font:normal 16px sans-serif;
+    color:#aeaeae;
+    border-radius:3px;
+    border:1px solid #bfc4c6;
+}
+
+#login_box_select:hover{
+    border-color:#7dc6dd;
+}
+
+#botao_login{
+    width:75px !important;
+    height: 35px !important; 
+    margin-right:25px !important;
+    margin-top: 10px !important;
+    float:right !important;
+    padding:5px 15px !important;
+    font:bold 12px sans-serif !important;
+    border-radius:20px !important;
+    text-shadow: 0px 1px 0px white !important;
+    border: 1px solid #9eb9c3 !important;
+    color:#527988 !important;
+    box-shadow:0px 0px #c9c9c9 !important; 
+
+    /*gradient gerado no site colorzilla*/
+    background: #ededed; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ededed 0%, #f6f6f6 53%, #ffffff 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(53%,#f6f6f6), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ededed 0%,#f6f6f6 53%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ededed 0%,#f6f6f6 53%,#ffffff 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ededed 0%,#f6f6f6 53%,#ffffff 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+#botao_login:hover{
+    /*gradient gerado no site colorzilla*/
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+
+}

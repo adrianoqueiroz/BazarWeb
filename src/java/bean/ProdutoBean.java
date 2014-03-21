@@ -6,11 +6,9 @@
 
 package bean;
 
+import dao.ProdutoDao;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import jpa.ProdutoJpaController;
 import model.Produto;
 
 /**
@@ -32,9 +30,7 @@ public class ProdutoBean {
     }
     
     public void create(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        ProdutoJpaController produtoJpa = new ProdutoJpaController(emf);
-        produtoJpa.create(produto);
-        emf.close();
+       ProdutoDao produtoDao = new ProdutoDao();
+       produtoDao.persist(produto);
     }
 }

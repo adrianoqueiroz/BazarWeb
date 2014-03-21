@@ -28,14 +28,14 @@ and open the template in the editor.
     </h:head>
 
     <h:body>
-        <p:growl id="growl" showDetail="true" sticky="true" />
+        <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
         <div id="div_geral">
             <div id="barra_topo">
                 <div id="barra_topo_central">
                     <a href="index.xhtml">
                         <img src="#{request.contextPath}/imagens/minilogo.png" alt="logo"/>
                     </a>
-                    <span id="usuario_logado">Usuário: Administrador</span>
+                    <span id="usuario_logado">Usuário: #{loginBean.funcionarioLogado.nome}</span>
                 </div>
             </div>
 
@@ -84,8 +84,6 @@ and open the template in the editor.
 
             <!--Dialogs-->
             <ui:include src="/dialogs.xhtml" />
-            
-            
             
             <span class="clearFull div20"></span>
             

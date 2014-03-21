@@ -30,18 +30,16 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Adriano
  */
 @Entity
-@Table(name = "cliente")
+@Table(name = "evento")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c"),
-    @NamedQuery(name = "Cliente.findById", query = "SELECT c FROM Cliente c WHERE c.id = :id"),
-    @NamedQuery(name = "Cliente.findByNome", query = "SELECT c FROM Cliente c WHERE c.nome = :nome"),
-    @NamedQuery(name = "Cliente.findByCpf", query = "SELECT c FROM Cliente c WHERE c.cpf = :cpf"),
-    @NamedQuery(name = "Cliente.findByTelefone", query = "SELECT c FROM Cliente c WHERE c.telefone = :telefone"),
-    @NamedQuery(name = "Cliente.findBySexo", query = "SELECT c FROM Cliente c WHERE c.sexo = :sexo"),
-    @NamedQuery(name = "Cliente.findByEmail", query = "SELECT c FROM Cliente c WHERE c.email = :email"),
-    @NamedQuery(name = "Cliente.findByDataNascimento", query = "SELECT c FROM Cliente c WHERE c.dataNascimento = :dataNascimento")})
-public class Cliente implements Serializable {
+    @NamedQuery(name = "Evento.findAll", query = "SELECT e FROM Evento e"),
+    @NamedQuery(name = "Evento.findById", query = "SELECT e FROM Evento e WHERE e.id = :id"),
+    @NamedQuery(name = "Evento.findByNome", query = "SELECT e FROM Evento e WHERE e.nome = :nome"),
+    @NamedQuery(name = "Evento.findByDataInicio", query = "SELECT e FROM Evento e WHERE e.dataInicio = :dataInicio"),
+    @NamedQuery(name = "Evento.findByDataFim", query = "SELECT e FROM Evento e WHERE e.dataFim = :dataFim"),
+    @NamedQuery(name = "Evento.findByIsActive", query = "SELECT e FROM Evento e WHERE e.isActive = :isActive")})
+public class Evento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,32 +48,27 @@ public class Cliente implements Serializable {
     @Basic(optional = false)
     @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @Column(name = "cpf")
-    private String cpf;
-    @Column(name = "telefone")
-    private String telefone;
-    @Column(name = "sexo")
-    private String sexo;
-    @Column(name = "email")
-    private String email;
-    @Column(name = "data_nascimento")
+    @Column(name = "data_inicio")
     @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clienteId")
+    private Date dataInicio;
+    @Column(name = "data_fim")
+    @Temporal(TemporalType.DATE)
+    private Date dataFim;
+    @Column(name = "isActive")
+    private Boolean isActive;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "eventoId")
     private Collection<Venda> vendaCollection;
 
-    public Cliente() {
+    public Evento() {
     }
 
-    public Cliente(Integer id) {
+    public Evento(Integer id) {
         this.id = id;
     }
 
-    public Cliente(Integer id, String nome, String cpf) {
+    public Evento(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
-        this.cpf = cpf;
     }
 
     public Integer getId() {
@@ -94,44 +87,28 @@ public class Cliente implements Serializable {
         this.nome = nome;
     }
 
-    public String getCpf() {
-        return cpf;
+    public Date getDataInicio() {
+        return dataInicio;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setDataInicio(Date dataInicio) {
+        this.dataInicio = dataInicio;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public Date getDataFim() {
+        return dataFim;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setDataFim(Date dataFim) {
+        this.dataFim = dataFim;
     }
 
-    public String getSexo() {
-        return sexo;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     @XmlTransient
@@ -153,10 +130,10 @@ public class Cliente implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Cliente)) {
+        if (!(object instanceof Evento)) {
             return false;
         }
-        Cliente other = (Cliente) object;
+        Evento other = (Evento) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -165,7 +142,7 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "model.Cliente[ id=" + id + " ]";
+        return "model.Evento[ id=" + id + " ]";
     }
     
 }

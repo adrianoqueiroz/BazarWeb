@@ -1,0 +1,40 @@
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+    <h:head>
+        <title>Bazar - Login</title>
+        <link rel="stylesheet" type="text/css" href="css/login2.css"/>
+        
+    </h:head>
+    
+    <h:body>
+        <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
+        <div id="div_geral">
+            <div id="div_logo">
+                <img alt="logo" id="logo" src="imagens/logo.png"/>
+            </div>
+            <div id="login_box">
+                <div id="login_box_label">
+                    <span>Autenticação</span>
+                </div>
+
+                <div>
+                    <h:form>
+                        <p:inputText id="usuario" style="width:300px;" type="text" value="#{loginBean.usuario}" />
+                        <p:watermark for="usuario" value="Usuário" /> 
+                        <p:inputText id="senha" style="width:300px;" type="password"  value="#{loginBean.senha}" />
+                        <p:watermark for="senha" value="Senha" /> 
+                       
+                        <p:commandButton ajax="false" value="Login" action="/index.xhtml" actionListener="#{loginBean.efetuaLogin()}"/>
+                    </h:form>
+                </div>
+
+            </div>
+
+        </div>
+    </h:body>
+</html>

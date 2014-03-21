@@ -17,7 +17,7 @@
             <h:outputLabel value="Telefone: " />  
             <p:inputText style="width:350px;"  value="#{clienteBean.novoCliente.telefone}"/>
             <h:outputLabel value="Data de Nascimento: " />  
-            <p:inputText style="width:350px;"  value="#{clienteBean.novoCliente.dataNascimento}"/>
+            <p:calendar style="width:350px;"  value="#{clienteBean.novoCliente.dataNascimento}" pattern="dd/MM/yyyy" locale="pt" navigator="true" effect="explode"/>
 
             <h:outputText value="Sexo: " />  
             <h:panelGrid columns="2" cellpadding="5">  

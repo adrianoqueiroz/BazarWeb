@@ -32,11 +32,11 @@
                             <h:panelGrid columns="1"> 
                                 <h:panelGrid columns="2">
                                     <p:inputText style="width:150px;" value="#{vendaBean.cpfProcurado}" /> 
-                                    <p:commandButton ajax="false" actionListener="#{vendaBean.clientePorCpf()}" update="carrinhoCompras growl" value="Buscar" />
+                                    <p:commandButton ajax="false" actionListener="#{vendaBean.buscarCliente()}" update="carrinhoCompras growl" value="Buscar" />
                                 </h:panelGrid>
 
-                                <h:outputLabel value="Cliente: #{vendaBean.clienteSelecionado.nome}" />  
-                                <h:outputLabel value="CPF: #{vendaBean.clienteSelecionado.cpf}" />  
+                                <h:outputLabel value="Cliente: #{vendaBean.venda.clienteId.nome}" />  
+                                <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" />  
                             </h:panelGrid>
                         </p:panel>
                     </h:form>
@@ -45,7 +45,7 @@
                         <p:panel header="Inserir Produto">
                             <h:outputLabel value="Código do Produto: " /> 
                             <h:panelGrid id="codProduto" columns="2"> 
-                                <p:inputText  style="width:150px;"  value="#{vendaBean.codigoProcurado}" /> 
+                                <p:inputText  style="width:150px;"  value="#{vendaBean.codigoProcurado}"  /> 
                                 <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
                             </h:panelGrid>
                         </p:panel>
@@ -59,18 +59,18 @@
                             <p:dataTable id="tabelaCarrinho" style="width: 600px;" 
                                          editable="true" editMode="cell" 
                                          scrollable="true" scrollHeight="240"  
-                                         var="itemVenda" value="#{vendaBean.vendas}">  
+                                         var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
 
                                 <p:column headerText="Código">  
-                                    <h:outputText value="#{itemVenda.produto.codigo}" />  
+                                    <h:outputText value="#{itemVenda.produtoId.codigo}" />  
                                 </p:column>  
 
                                 <p:column headerText="Produto">  
-                                    <h:outputText value="#{itemVenda.produto.nome}" />  
+                                    <h:outputText value="#{itemVenda.produtoId.nome}" />  
                                 </p:column>  
 
                                 <p:column headerText="Preço">  
-                                    <h:outputText value="R$ #{itemVenda.produto.preco}" />  
+                                    <h:outputText value="R$ #{itemVenda.produtoId.preco}" />  
                                 </p:column>  
 
                                 <p:column headerText="Quantidade">
@@ -86,13 +86,13 @@
 
                                 <p:column>  
                                     <p:commandButton update="tabelaCarrinho" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
-                                        <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.vendas}" /> 
+                                        <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
                                     </p:commandButton> 
                                 </p:column>
 
 
                                 <f:facet name="footer">
-                                    Total de Itens #{vendaBean.vendas.size()}
+                                    Total de Itens #{vendaBean.venda.itemCollection.size()}
                                 </f:facet>
 
                             </p:dataTable> 

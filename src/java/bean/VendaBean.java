@@ -1,17 +1,12 @@
 package bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import dao.ClienteDao;
+import dao.ProdutoDao;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import jpa.ClienteJpaController;
-import jpa.ProdutoJpaController;
-import model.Cliente;
-import model.Produto;
+import model.Item;
 import model.Venda;
 
 /**
@@ -19,36 +14,27 @@ import model.Venda;
  * @author Adriano
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class VendaBean {
 
-    private List<Venda> vendas;
-    private long codigoProcurado;
+    private Venda venda = new Venda();
+    private Integer codigoProcurado;
     private String cpfProcurado;
-    private Cliente clienteSelecionado = new Cliente();
 
-    ClienteBean clienteBean = new ClienteBean();
-
-    private Venda novaVenda = new Venda();
-
-    public VendaBean() {
-        vendas = new ArrayList<>();
+    public Venda getVenda() {
+        return venda;
     }
 
-    public List<Venda> getVendas() {
-        return vendas;
+    public void setVenda(Venda venda) {
+        this.venda = venda;
     }
 
-    public void setVendas(List<Venda> vendas) {
-        this.vendas = vendas;
+    public Integer getCodigoProcurado() {
+        return codigoProcurado;
     }
 
-    public Cliente getClienteSelecionado() {
-        return clienteSelecionado;
-    }
-
-    public void setClienteSelecionado(Cliente clienteSelecionado) {
-        this.clienteSelecionado = clienteSelecionado;
+    public void setCodigoProcurado(Integer codigoProcurado) {
+        this.codigoProcurado = codigoProcurado;
     }
 
     public String getCpfProcurado() {
@@ -59,79 +45,50 @@ public class VendaBean {
         this.cpfProcurado = cpfProcurado;
     }
 
-    public Produto buscarProdutoLista(long codigo) {
-        for (Venda v : vendas) {
-            if (v.getProduto().getCodigo() == codigo) {
-                return v.getProduto();
-            }
-        }
-        return null;
-    }
-
     public void inserirProduto() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        ProdutoJpaController produtoJpaController = new ProdutoJpaController(emf);
-        Produto produtoEncontrado;
+        Item item = new Item();
+        ProdutoDao produtoDao = new ProdutoDao();
         boolean inserir = true;
         FacesContext context = FacesContext.getCurrentInstance();
 
-        //se não existe o produto na lista, insere
-        if (buscarProdutoLista(codigoProcurado) != null) {
-            inserir = false;
-            context.addMessage(null, new FacesMessage("Falha", "O Produto já está na lista!"));
+        for (Item i : venda.getItemCollection()) {
+            if (i.getProdutoId().getCodigo() == codigoProcurado) {
+                inserir = false;
+                context.addMessage(null, new FacesMessage("Falha", "O produto já está na lista!"));
+                break;
+            }
         }
 
         if (inserir) {
             try {
-                produtoEncontrado = produtoJpaController.findProdutoByCodigo(this.getCodigoProcurado());
-                Venda venda = new Venda();
-                venda.setProduto(produtoEncontrado);
-                vendas.add(venda);
-
-                context.addMessage(null, new FacesMessage("Sucesso", venda.getProduto().getNome() + " adicionado"));
-
+                item.setProdutoId(produtoDao.findByCodigo(codigoProcurado));
+                item.setPrecoCompra(item.getProdutoId().getPreco());
+                item.setQuantidade(1);
+                venda.getItemCollection().add(item);
+                context.addMessage(null, new FacesMessage(item.getProdutoId().getNome(), "Produto adicionado na lista."));
             } catch (Exception e) {
                 context.addMessage(null, new FacesMessage("Falha", "Produto não encontrado!"));
-            } finally {
-                codigoProcurado = 0;
-                emf.close();
             }
         }
+        codigoProcurado = null;
     }
 
-    public long getCodigoProcurado() {
-        return codigoProcurado;
-    }
-
-    public void setCodigoProcurado(long codigoProcurado) {
-        this.codigoProcurado = codigoProcurado;
-    }
-
-    public Venda getNovaVenda() {
-        return novaVenda;
-    }
-
-    public void setNovaVenda(Venda novaVenda) {
-        this.novaVenda = novaVenda;
-    }
-
-    public void clientePorCpf() {
+    public void buscarCliente() {
+        ClienteDao clienteDao = new ClienteDao();
         FacesContext context = FacesContext.getCurrentInstance();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
-        ClienteJpaController clienteJpa = new ClienteJpaController(emf);
-        Cliente clienteBuscado = clienteJpa.findClienteByCpf(cpfProcurado);
-
-        if (clienteBuscado != null) {
-            context.addMessage(null, new FacesMessage("Sucesso", "Cliente encontrado!"));
-            clienteSelecionado = clienteBuscado;
-        } else {
+        
+        try {
+            venda.setClienteId(clienteDao.findByCpf(cpfProcurado));
+            context.addMessage(null, new FacesMessage("Cliente Selecionado", venda.getClienteId().getNome()));
+        } catch (Exception e) {
             context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
         }
-        emf.close();
     }
-
-    public void clientePorCpf2() {
-        clienteSelecionado = clienteBean.findClienteByCpf(cpfProcurado);
+    
+    public void finalizarVenda(){
+        LoginBean loginBean = new LoginBean();
+        venda.setFuncionarioId(loginBean.getFuncionarioLogado());
+        venda.setEventoId(loginBean.getEventoSelecionado());
+        
     }
-
 }
