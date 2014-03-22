@@ -10,28 +10,19 @@
             <h:panelGrid columns="2"> 
                 <h:panelGrid>
                     <h:form>
-                        <p:panel header="Caixa">
-                            <h:panelGrid columns="2">
-                                <h:outputLabel value="Data de Abertura: " /> 
-                                <h:outputLabel value="09/03/2014" />
-                                <h:outputLabel value="Produtos vendidos: " /> 
-                                <h:outputLabel value="1111" />
-                                <h:outputLabel value="Clientes Atendidos: " /> 
-                                <h:outputLabel value="1111" />
-                            </h:panelGrid>
-
-                            <h:panelGrid columns="2" >
-                                <p:commandButton ajax="false" value="Detalhes" />
-                                <p:commandButton ajax="false" value="Encerrar" /> 
+                        <p:panel header="Inserir Produto">
+                            <h:outputLabel value="Código do Produto: " /> 
+                            <h:panelGrid id="codProduto" columns="2"> 
+                                <p:inputText value="#{vendaBean.codigoProcurado}"  /> 
+                                <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
                             </h:panelGrid>
                         </p:panel>
-                    </h:form>
-
+                    </h:form>      
                     <h:form>
                         <p:panel header="Cliente">
                             <h:panelGrid columns="1"> 
                                 <h:panelGrid columns="2">
-                                    <p:inputText style="width:150px;" value="#{vendaBean.cpfProcurado}" /> 
+                                    <p:inputMask value="#{vendaBean.cpfProcurado}" mask="999.999.999-99" /> 
                                     <p:commandButton ajax="false" actionListener="#{vendaBean.buscarCliente()}" update="carrinhoCompras growl" value="Buscar" />
                                 </h:panelGrid>
 
@@ -42,21 +33,23 @@
                     </h:form>
 
                     <h:form>
-                        <p:panel header="Inserir Produto">
-                            <h:outputLabel value="Código do Produto: " /> 
-                            <h:panelGrid id="codProduto" columns="2"> 
-                                <p:inputText  style="width:150px;"  value="#{vendaBean.codigoProcurado}"  /> 
-                                <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
+                        <p:panel header="Detalhes da Compra">
+                            <h:panelGrid id="detalhesCompra" columns="1">
+                                <h:outputText value="Total: R$ #{vendaBean.valorCompra}" />
+                                <p:inputText/>
+                                <h:outputText value="Troco: " />
+                                <p:commandButton ajax="false" value="Finalizar Compra" /> 
                             </h:panelGrid>
                         </p:panel>
                     </h:form>
+
                 </h:panelGrid>
 
                 <h:panelGrid>
 
                     <p:panel header="Carrinho de Compras">
                         <h:form id="carrinhoCompras">
-                            <p:dataTable id="tabelaCarrinho" style="width: 600px;" 
+                            <p:dataTable id="tabelaCarrinho" 
                                          editable="true" editMode="cell" 
                                          scrollable="true" scrollHeight="240"  
                                          var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
@@ -79,13 +72,14 @@
                                             <h:outputText value="#{itemVenda.quantidade}" />
                                         </f:facet>  
                                         <f:facet name="input">
-                                            <p:inputText value="#{itemVenda.quantidade}" label="Quantidade"/>
+                                            <p:inputText value="#{itemVenda.quantidade}" label="Quantidade">
+                                            </p:inputText> 
                                         </f:facet>  
                                     </p:cellEditor>
                                 </p:column>
 
                                 <p:column>  
-                                    <p:commandButton update="tabelaCarrinho" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
+                                    <p:commandButton update="tabelaCarrinho " actionListener="#{vendaBean.calculaValorCompra()}" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
                                         <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
                                     </p:commandButton> 
                                 </p:column>
@@ -98,8 +92,8 @@
                             </p:dataTable> 
                         </h:form>
                     </p:panel>
-
                 </h:panelGrid>
+
             </h:panelGrid>
         </div>
     </ui:define>

@@ -47,7 +47,7 @@ public class Produto implements Serializable {
     @Column(name = "nome")
     private String nome;
     @Basic(optional = false)
-    @Column(name = "codigo")
+    @Column(name = "codigo", unique = true)
     private int codigo;
     @Basic(optional = false)
     @Column(name = "preco")

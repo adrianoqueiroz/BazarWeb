@@ -20,6 +20,7 @@ public class VendaBean {
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
+    private float valorCompra;
 
     public Venda getVenda() {
         return venda;
@@ -43,6 +44,14 @@ public class VendaBean {
 
     public void setCpfProcurado(String cpfProcurado) {
         this.cpfProcurado = cpfProcurado;
+    }
+
+    public float getValorCompra() {
+        return valorCompra;
+    }
+
+    public void setValorCompra(float valorCompra) {
+        this.valorCompra = valorCompra;
     }
 
     public void inserirProduto() {
@@ -70,13 +79,14 @@ public class VendaBean {
                 context.addMessage(null, new FacesMessage("Falha", "Produto não encontrado!"));
             }
         }
+        calculaValorCompra();
         codigoProcurado = null;
     }
 
     public void buscarCliente() {
         ClienteDao clienteDao = new ClienteDao();
         FacesContext context = FacesContext.getCurrentInstance();
-        
+
         try {
             venda.setClienteId(clienteDao.findByCpf(cpfProcurado));
             context.addMessage(null, new FacesMessage("Cliente Selecionado", venda.getClienteId().getNome()));
@@ -84,11 +94,18 @@ public class VendaBean {
             context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
         }
     }
-    
-    public void finalizarVenda(){
+
+    public void calculaValorCompra() {
+        valorCompra = 0;
+        for(Item i : venda.getItemCollection()){
+            valorCompra += i.getPrecoCompra()*i.getQuantidade();
+        }
+    }
+
+    public void finalizarVenda() {
         LoginBean loginBean = new LoginBean();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-        
+
     }
 }

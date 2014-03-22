@@ -51,7 +51,7 @@ public class Cliente implements Serializable {
     @Column(name = "nome")
     private String nome;
     @Basic(optional = false)
-    @Column(name = "cpf")
+    @Column(name = "cpf", unique = true)
     private String cpf;
     @Column(name = "telefone")
     private String telefone;
