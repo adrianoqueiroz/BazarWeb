@@ -93,6 +93,7 @@ public class VendaBean {
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
         }
+        cpfProcurado = null;
     }
 
     public void calculaValorCompra() {

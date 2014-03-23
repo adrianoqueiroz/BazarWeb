@@ -10,8 +10,9 @@
 
 #div_botoes_venda{
     margin: auto;
-    width: 760px;
-    height: 420px;
+    width: 100%;
+    max-width: 760px;
+    min-height: 420px;
     padding-top: 20px;
 }
 
