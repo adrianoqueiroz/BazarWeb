@@ -10,7 +10,7 @@
     <class>model.Venda</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://192.168.1.12:3306/bazarweb?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://192.168.56.102:3306/bazarweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="b4z4rw3b"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.user" value="bazar"/>
