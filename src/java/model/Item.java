@@ -55,7 +55,8 @@ public class Item implements Serializable {
     @JoinColumn(name = "compra_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Venda compraId;
-
+    private Float total;
+    
     public Item() {
     }
 
@@ -117,6 +118,15 @@ public class Item implements Serializable {
         this.compraId = compraId;
     }
 
+    public Float getTotal() {
+        total = getQuantidade() * getPrecoCompra();
+        return total;
+    }
+
+    public void getTotal(Float total) {
+        this.total = total;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

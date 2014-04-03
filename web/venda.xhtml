@@ -62,10 +62,6 @@
                                     <h:outputText value="#{itemVenda.produtoId.nome}" />  
                                 </p:column>  
 
-                                <p:column headerText="Preço">  
-                                    <h:outputText value="R$ #{itemVenda.produtoId.preco}" />  
-                                </p:column>  
-
                                 <p:column headerText="Quantidade">
                                     <p:cellEditor>  
                                         <f:facet name="output">
@@ -78,8 +74,16 @@
                                     </p:cellEditor>
                                 </p:column>
 
+                                <p:column headerText="Preço">  
+                                    <h:outputText value="R$ #{itemVenda.produtoId.preco}" />  
+                                </p:column>  
+
+                                <p:column headerText="Total">  
+                                    <h:outputText value="R$ #{itemVenda.total}" />  
+                                </p:column> 
                                 <p:column>  
                                     <p:commandButton update="tabelaCarrinho " actionListener="#{vendaBean.calculaValorCompra()}" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
                                         <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
                                     </p:commandButton> 
                                 </p:column>
