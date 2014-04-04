@@ -33,12 +33,13 @@
                     </h:form>
 
                     <h:form>
-                        <p:panel header="Detalhes da Compra">
+                        <p:panel header="Detalhes da Venda">
                             <h:panelGrid id="detalhesCompra" columns="1">
-                                <h:outputText value="Total: R$ #{vendaBean.valorCompra}" />
-                                <p:inputText/>
-                                <h:outputText value="Troco: " />
-                                <p:commandButton ajax="false" value="Finalizar Compra" /> 
+                                <h:outputText value="Quantidade de Itens: #{vendaBean.venda.itemCollection.size()}" />
+                                <h:outputLabel value="Cliente: #{vendaBean.venda.clienteId.nome}" />  
+                                <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" /> 
+                                <h:outputText value="Valor Total: R$#{vendaBean.valorCompra}" />
+                                <p:commandButton ajax="false" value="Finalizar Venda" /> 
                             </h:panelGrid>
                         </p:panel>
                     </h:form>
@@ -75,15 +76,14 @@
                                 </p:column>
 
                                 <p:column headerText="Preço">  
-                                    <h:outputText value="R$ #{itemVenda.produtoId.preco}" />  
+                                    <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
                                 </p:column>  
 
                                 <p:column headerText="Total">  
-                                    <h:outputText value="R$ #{itemVenda.total}" />  
+                                    <h:outputText value="R$#{itemVenda.total}" />  
                                 </p:column> 
                                 <p:column>  
                                     <p:commandButton update="tabelaCarrinho " actionListener="#{vendaBean.calculaValorCompra()}" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
-                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
                                         <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
                                     </p:commandButton> 
                                 </p:column>
