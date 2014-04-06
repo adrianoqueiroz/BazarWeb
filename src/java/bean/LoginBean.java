@@ -1,15 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bean;
 
-import dao.FuncionarioDao;
+import JPA.EventoJpaController;
+import JPA.FuncionarioJpaController;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
 import model.Evento;
 import model.Funcionario;
 
@@ -19,11 +24,27 @@ import model.Funcionario;
  */
 @ManagedBean
 @SessionScoped
-public class LoginBean {
+public class LoginBean implements Serializable{
+
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    EntityManagerFactory emf;
+    @Resource //inject from your application server
+    UserTransaction utx;
+
+    private Collection<Evento> eventos;
     private Evento eventoSelecionado = new Evento();
     private Funcionario funcionarioLogado = new Funcionario();
     private String usuario;
     private String senha;
+    private Integer idEventoSelecionado;
+
+    public Integer getIdEventoSelecionado() {
+        return idEventoSelecionado;
+    }
+
+    public void setIdEventoSelecionado(Integer idEventoSelecionado) {
+        this.idEventoSelecionado = idEventoSelecionado;
+    }
 
     public Evento getEventoSelecionado() {
         return eventoSelecionado;
@@ -32,7 +53,7 @@ public class LoginBean {
     public void setEventoSelecionado(Evento eventoSelecionado) {
         this.eventoSelecionado = eventoSelecionado;
     }
-    
+
     public Funcionario getFuncionarioLogado() {
         return funcionarioLogado;
     }
@@ -59,17 +80,42 @@ public class LoginBean {
 
     public void efetuaLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
-        FuncionarioDao funcionarioDao = new FuncionarioDao();
-        try {
-            Funcionario funcionarioEncontrado = funcionarioDao.findByLogin(usuario, senha);
 
-            if (funcionarioEncontrado != null) {
-                funcionarioLogado = funcionarioEncontrado;
-                context.addMessage(null, new FacesMessage("Funcionario Logado", funcionarioLogado.getNome()));
+        try {
+            FuncionarioJpaController funcionarioJpaController = new FuncionarioJpaController(utx, emf);
+            funcionarioLogado = funcionarioJpaController.findByLogin(usuario, senha);
+            EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
+            eventoSelecionado = eventoJpaController.findEvento(idEventoSelecionado);
+
+            if (funcionarioLogado != null && eventoSelecionado != null) {
+                context.addMessage(null, new FacesMessage("Login Efetuado!", funcionarioLogado.getNome() + ", " + eventoSelecionado.getNome()));
             }
         } catch (Exception e) {
-            context.addMessage(null, new FacesMessage("Erro no Login","Usuário e/ou senha incorreto!"));
+            context.addMessage(null, new FacesMessage("Erro no Login", "Usuário e/ou senha incorreto!"));
         }
     }
 
+    public List<SelectItem> getSelectItemEventos() {
+        EventoJpaController eventoJpaController = new EventoJpaController((UserTransaction) utx, emf);
+
+        List<Evento> listaEventos = eventoJpaController.findEventoEntities();
+        List<SelectItem> itens = new ArrayList<>(listaEventos.size());
+
+        for (Evento e : listaEventos) {
+            itens.add(new SelectItem(e.getId(), e.getNome()));
+
+        }
+        return itens;
+    }
+
+    public Collection<Evento> getEventos() {
+        EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
+
+        eventos = eventoJpaController.findEventoEntities();
+        return eventos;
+    }
+
+    public void setEventos(Collection<Evento> eventos) {
+        this.eventos = eventos;
+    }
 }

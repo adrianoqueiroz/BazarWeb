@@ -27,7 +27,7 @@
 
                 <p:panel header="Produtos Cadastrados">
                     <h:form>
-                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}"> 
+                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single"> 
                             <p:column headerText="Código">  
                                 <h:outputText value="#{produto.codigo}" />  
                             </p:column> 
@@ -37,6 +37,12 @@
                             <p:column headerText="Preço">  
                                 <h:outputText value="R$ #{produto.preco}" />  
                             </p:column>
+                            <p:column headerText="Quantidade">  
+                                <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
+                            </p:column> 
+                            <p:column headerText="Vendidos">  
+                                <h:outputText value="0" />  
+                            </p:column> 
                             <p:column headerText="Estoque">  
                                 <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
                             </p:column> 

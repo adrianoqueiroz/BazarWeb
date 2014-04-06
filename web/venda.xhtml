@@ -12,8 +12,9 @@
                     <h:form>
                         <p:panel header="Inserir Produto">
                             <h:outputLabel value="Código do Produto: " /> 
-                            <h:panelGrid id="codProduto" columns="2"> 
-                                <p:inputText value="#{vendaBean.codigoProcurado}"  /> 
+                            <h:panelGrid id="codProduto" columns="3"> 
+                                <p:focus for="codigo"/>
+                                <p:inputText id="codigo" value="#{vendaBean.codigoProcurado}"  /> 
                                 <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
                             </h:panelGrid>
                         </p:panel>
@@ -22,7 +23,7 @@
                         <p:panel header="Cliente">
                             <h:panelGrid columns="1"> 
                                 <h:panelGrid columns="2">
-                                    <p:inputMask value="#{vendaBean.cpfProcurado}" mask="999.999.999-99" /> 
+                                    <p:inputMask id="cliente" value="#{vendaBean.cpfProcurado}" mask="999.999.999-99" /> 
                                     <p:commandButton ajax="false" actionListener="#{vendaBean.buscarCliente()}" update="carrinhoCompras growl" value="Buscar" />
                                 </h:panelGrid>
 
@@ -50,50 +51,52 @@
 
                     <p:panel header="Carrinho de Compras">
                         <h:form id="carrinhoCompras">
-                            <p:dataTable id="tabelaCarrinho" 
-                                         editable="true" editMode="cell" 
-                                         scrollable="true" scrollHeight="240"  
-                                         var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
+                            <center>
+                                <p:dataTable id="tabelaCarrinho" 
+                                             editable="true" editMode="cell" 
+                                             scrollable="true" scrollHeight="240"  
+                                             var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
 
-                                <p:column headerText="Código">  
-                                    <h:outputText value="#{itemVenda.produtoId.codigo}" />  
-                                </p:column>  
+                                    <p:column headerText="Código">  
+                                        <h:outputText value="#{itemVenda.produtoId.codigo}" />  
+                                    </p:column>  
 
-                                <p:column headerText="Produto">  
-                                    <h:outputText value="#{itemVenda.produtoId.nome}" />  
-                                </p:column>  
+                                    <p:column headerText="Produto">  
+                                        <h:outputText value="#{itemVenda.produtoId.nome}" />  
+                                    </p:column>  
 
-                                <p:column headerText="Quantidade">
-                                    <p:cellEditor>  
-                                        <f:facet name="output">
-                                            <h:outputText value="#{itemVenda.quantidade}" />
-                                        </f:facet>  
-                                        <f:facet name="input">
-                                            <p:inputText value="#{itemVenda.quantidade}" label="Quantidade">
-                                            </p:inputText> 
-                                        </f:facet>  
-                                    </p:cellEditor>
-                                </p:column>
+                                    <p:column headerText="Quantidade">
+                                        <p:cellEditor>  
+                                            <f:facet name="output">
+                                                <h:outputText value="#{itemVenda.quantidade}" />
+                                            </f:facet>  
+                                            <f:facet name="input">
+                                                <p:inputText value="#{itemVenda.quantidade}" label="Quantidade">
+                                                </p:inputText> 
+                                            </f:facet>  
+                                        </p:cellEditor>
+                                    </p:column>
 
-                                <p:column headerText="Preço">  
-                                    <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
-                                </p:column>  
+                                    <p:column headerText="Preço">  
+                                        <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
+                                    </p:column>  
 
-                                <p:column headerText="Total">  
-                                    <h:outputText value="R$#{itemVenda.total}" />  
-                                </p:column> 
-                                <p:column>  
-                                    <p:commandButton update="tabelaCarrinho " actionListener="#{vendaBean.calculaValorCompra()}" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
-                                        <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
-                                    </p:commandButton> 
-                                </p:column>
+                                    <p:column headerText="Total">  
+                                        <h:outputText value="R$#{itemVenda.total}" />  
+                                    </p:column> 
+                                    <p:column>  
+                                        <p:commandButton update="tabelaCarrinho " actionListener="#{vendaBean.calculaValorCompra()}" process="tabelaCarrinho" icon="ui-icon-trash" title="View">  
+                                            <p:collector unique="true" value="#{itemVenda}"  removeFrom="#{vendaBean.venda.itemCollection}" /> 
+                                        </p:commandButton> 
+                                    </p:column>
 
 
-                                <f:facet name="footer">
-                                    Total de Itens #{vendaBean.venda.itemCollection.size()}
-                                </f:facet>
+                                    <f:facet name="footer">
+                                        Total de Itens #{vendaBean.venda.itemCollection.size()}
+                                    </f:facet>
 
-                            </p:dataTable> 
+                                </p:dataTable>
+                            </center> 
                         </h:form>
                     </p:panel>
                 </h:panelGrid>

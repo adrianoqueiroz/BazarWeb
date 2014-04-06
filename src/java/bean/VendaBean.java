@@ -1,11 +1,15 @@
 package bean;
 
-import dao.ClienteDao;
-import dao.ProdutoDao;
+import JPA.ClienteJpaController;
+import JPA.ProdutoJpaController;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
 import model.Item;
 import model.Venda;
 
@@ -16,6 +20,10 @@ import model.Venda;
 @ManagedBean
 @ViewScoped
 public class VendaBean {
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    EntityManagerFactory emf;
+    @Resource //inject from your application server
+    UserTransaction utx;
 
     private Venda venda = new Venda();
     private Integer codigoProcurado;
@@ -55,8 +63,8 @@ public class VendaBean {
     }
 
     public void inserirProduto() {
-        Item item = new Item();
-        ProdutoDao produtoDao = new ProdutoDao();
+        
+        ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
         boolean inserir = true;
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -70,25 +78,26 @@ public class VendaBean {
 
         if (inserir) {
             try {
-                item.setProdutoId(produtoDao.findByCodigo(codigoProcurado));
+                Item item = new Item();
+                item.setProdutoId(produtoJpaController.findByCodigo(codigoProcurado));
                 item.setPrecoCompra(item.getProdutoId().getPreco());
                 item.setQuantidade(1);
                 venda.getItemCollection().add(item);
+                calculaValorCompra();
                 context.addMessage(null, new FacesMessage(item.getProdutoId().getNome(), "Produto adicionado na lista."));
             } catch (Exception e) {
                 context.addMessage(null, new FacesMessage("Falha", "Produto não encontrado!"));
             }
         }
-        calculaValorCompra();
         codigoProcurado = null;
     }
 
     public void buscarCliente() {
-        ClienteDao clienteDao = new ClienteDao();
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
-            venda.setClienteId(clienteDao.findByCpf(cpfProcurado));
+            ClienteJpaController clienteJpaController = new ClienteJpaController(utx, emf);
+            venda.setClienteId(clienteJpaController.findByCpf(cpfProcurado));
             context.addMessage(null, new FacesMessage("Cliente Selecionado", venda.getClienteId().getNome()));
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage("Falha", "Cliente não encontrado!"));
@@ -107,6 +116,5 @@ public class VendaBean {
         LoginBean loginBean = new LoginBean();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-
     }
 }

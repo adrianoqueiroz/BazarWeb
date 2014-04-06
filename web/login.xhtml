@@ -1,16 +1,15 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-    
+
     <h:head>
         <title>Bazar - Login</title>
         <link rel="stylesheet" type="text/css" href="css/login2.css"/>
-        
     </h:head>
-    
+
     <h:body>
         <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
         <div id="div_geral">
@@ -24,17 +23,35 @@
 
                 <div>
                     <h:form>
-                        <p:inputText id="usuario" style="width:300px;" type="text" value="#{loginBean.usuario}" />
-                        <p:watermark for="usuario" value="Usuário" /> 
-                        <p:inputText id="senha" style="width:300px;" type="password"  value="#{loginBean.senha}" />
-                        <p:watermark for="senha" value="Senha" /> 
-                       
-                        <p:commandButton ajax="false" value="Login" action="/index.xhtml" actionListener="#{loginBean.efetuaLogin()}"/>
+                        <center>
+                            <h:panelGrid cellpadding="2" styleClass="semBorda">
+
+                                <p:inputText id="usuario" style="width:300px;" type="text" value="#{loginBean.usuario}" />
+                                <p:watermark for="usuario" value="Usuário" /> 
+                                <p:inputText id="senha" style="width:300px;" type="password"  value="#{loginBean.senha}" />
+                                <p:watermark for="senha" value="Senha" /> 
+
+                                <h:panelGrid columns="2" styleClass="semBorda">
+                                    <p:selectOneMenu style="width:210px;" id="evento" value="#{loginBean.idEventoSelecionado}">
+                                        <f:selectItem itemLabel="Selecione um Evento..."/>
+                                        <f:selectItems value="#{loginBean.selectItemEventos}" />
+                                    </p:selectOneMenu>                      
+                                    <p:commandButton id="botao_login" ajax="false" value="Login" action="/index.xhtml" actionListener="#{loginBean.efetuaLogin()}"/>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </center>
                     </h:form>
                 </div>
-
             </div>
-
         </div>
+        <span class="clearFull div20"></span>
+
+        <footer>
+            <div id="footer_copyright">
+                <img alt="logops" id="logops" src="imagens/logo-ps.png"/>
+                <img alt="logoti" id="logoti" src="imagens/logo-ti.png"/>
+            </div>                    
+        </footer> 
     </h:body>
 </html>

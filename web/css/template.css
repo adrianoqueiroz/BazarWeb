@@ -63,7 +63,7 @@ footer {
     height:50px;
     background-color: #3793bf;
     bottom: 0;
-    position: absolute;
+    position: fixed;
 }
 
 #footer_copyright{

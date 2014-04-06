@@ -1,11 +1,3 @@
-/* 
-    Document   : login3
-    Created on : 20/06/2013, 23:43:51
-    Author     : Adriano
-    Description:
-        Purpose of the stylesheet follows.
-*/
-
 root { 
     display: block;
 }
@@ -120,3 +112,32 @@ root {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
 
 }
+
+footer {
+    width: 99%;
+    bottom: 0;
+    position: absolute;
+}
+
+footer div{
+    width: 100%; 
+    max-width: 960px;
+    bottom: 0;
+    margin:auto;
+    text-align: center;
+}
+
+footer img{
+    margin: auto 0;
+}
+
+/*classe para auxiliar no cancelamento de float*/
+.clearFull{
+    display:block;
+    clear:both;
+}
+
+/*classe para auxiliar no espacamento*/
+.div10{ height: 10px; }
+.div20{ height: 20px; }
+.div80{ height: 80px; }

@@ -6,13 +6,19 @@
 package bean;
 
 import JPA.ProdutoJpaController;
-import dao.ProdutoDao;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.UserTransaction;
 import model.Produto;
 
 /**
@@ -23,19 +29,23 @@ import model.Produto;
 @RequestScoped
 public class ProdutoBean {
 
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    EntityManagerFactory emf;
+    @Resource //inject from your application server
+    UserTransaction utx;
+
     private Produto produto;
     private Collection<Produto> produtoCollection;
     private int estoque;
-    
+
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
         this.produto = new Produto();
     }
 
     public Collection<Produto> getProdutoCollection() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("BazarWebPU");
         ProdutoJpaController produtoJpaController;
-        produtoJpaController = new ProdutoJpaController(emf);
+        produtoJpaController = new ProdutoJpaController(utx, emf);
 
         produtoCollection = produtoJpaController.findProdutoEntities();
         return produtoCollection;
@@ -54,10 +64,18 @@ public class ProdutoBean {
     }
 
     public void create() {
-        ProdutoDao produtoDao = new ProdutoDao();
-        if(produtoDao.persist(produto)){
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
+            produtoJpaController.create(produto);
             produto = new Produto();
+            context.addMessage(null, new FacesMessage("Produto cadastrado!", produto.getNome()));
+
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage("Falha!", "Falha"));
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public int getEstoque(Produto produto) {
@@ -69,7 +87,5 @@ public class ProdutoBean {
     public void setEstoque(int estoque) {
         this.estoque = estoque;
     }
-    
-    
-    
+
 }
