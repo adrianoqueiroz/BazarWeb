@@ -27,7 +27,8 @@
 
                 <p:panel header="Produtos Cadastrados">
                     <h:form>
-                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single"> 
+                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single" paginator="true" rows="10"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
                             <p:column headerText="Código">  
                                 <h:outputText value="#{produto.codigo}" />  
                             </p:column> 

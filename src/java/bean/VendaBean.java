@@ -3,6 +3,7 @@ package bean;
 import JPA.ClienteJpaController;
 import JPA.ProdutoJpaController;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -11,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
+import model.Cliente;
 import model.Item;
 import model.Venda;
 
@@ -20,7 +22,8 @@ import model.Venda;
  */
 @ManagedBean
 @ViewScoped
-public class VendaBean implements Serializable{
+public class VendaBean implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     EntityManagerFactory emf;
     @Resource //inject from your application server
@@ -29,6 +32,7 @@ public class VendaBean implements Serializable{
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
+    private String nomeProcurado;
     private float valorCompra;
 
     public Venda getVenda() {
@@ -64,7 +68,7 @@ public class VendaBean implements Serializable{
     }
 
     public void inserirProduto() {
-        
+
         ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
         boolean inserir = true;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -93,6 +97,14 @@ public class VendaBean implements Serializable{
         codigoProcurado = null;
     }
 
+    public void removeItem(Item item) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String nomeProduto = item.getProdutoId().getNome();
+        venda.getItemCollection().remove(item);
+        context.addMessage(null, new FacesMessage(nomeProduto, "Produto removido do carrinho!"));
+        calculaValorCompra();
+    }
+
     public void buscarCliente() {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -106,16 +118,61 @@ public class VendaBean implements Serializable{
         cpfProcurado = null;
     }
 
+    public Collection<Cliente> buscarClientePorNome() {
+
+        try {
+            ClienteJpaController clienteJpaController = new ClienteJpaController(utx, emf);
+            return clienteJpaController.findByLikeNome(nomeProcurado);
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     public void calculaValorCompra() {
         valorCompra = 0;
-        for(Item i : venda.getItemCollection()){
-            valorCompra += i.getPrecoCompra()*i.getQuantidade();
+        for (Item i : venda.getItemCollection()) {
+            valorCompra += i.getPrecoCompra() * i.getQuantidade();
         }
+    }
+
+    public void incrementaQuantidade(Item item) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        int quantidadeMaxima = 6;
+        //TODO: verificar se tem no estoque
+        int quantidade = item.getQuantidade();
+        quantidade++;
+
+        if (quantidade <= quantidadeMaxima) {
+            item.setQuantidade(quantidade);
+        } else {
+            context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima permitida são " + quantidadeMaxima + "itens!"));
+        }
+
+        calculaValorCompra();
+    }
+
+    public void decrementaQuantidade(Item item) {
+        //TODO: verificar se tem no estoque
+        int quantidade = item.getQuantidade();
+        quantidade--;
+        if (quantidade > 0) {
+            item.setQuantidade(quantidade);
+        }
+
+        calculaValorCompra();
     }
 
     public void finalizarVenda() {
         LoginBean loginBean = new LoginBean();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
+    }
+
+    public String getNomeProcurado() {
+        return nomeProcurado;
+    }
+
+    public void setNomeProcurado(String nomeProcurado) {
+        this.nomeProcurado = nomeProcurado;
     }
 }
