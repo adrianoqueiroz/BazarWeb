@@ -12,14 +12,19 @@
                     <h:form>
                         <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
                             <h:outputLabel value="Código: " />
-                            <p:inputText style="width:250px;"  required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
+                            <p:inputText  required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
                             <h:outputLabel value="Produto: " />
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
-                            <h:outputLabel value="Preço: " />  
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
+                            <p:inputText  required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
+                            <h:outputLabel value="Preço: " /> 
+                            <p:inputText  required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
+                            <h:outputLabel value="Categoria: " /> 
+                            <p:selectOneMenu id="evento">
+                                <f:selectItem itemLabel="Selecione..."/>
+                                <f:selectItems value="#{loginBean.selectItemEventos}" />
+                            </p:selectOneMenu> 
                             <h:outputLabel value="Quantidade: " />  
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
-                            <p:commandButton ajax="false" value="Cancelar" />
+                            <p:inputText  required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
+                            <p:commandButton ajax="false" value="Limpar"  />
                             <p:commandButton ajax="false" actionListener="#{produtoBean.create()}" value="Salvar" />
                         </h:panelGrid>
                     </h:form>
@@ -34,6 +39,9 @@
                             </p:column> 
                             <p:column headerText="Produto">  
                                 <h:outputText value="#{produto.nome}" />  
+                            </p:column> 
+                            <p:column headerText="Categoria">  
+                                <h:outputText value="xxx" />  
                             </p:column> 
                             <p:column headerText="Preço">  
                                 <h:outputText value="R$ #{produto.preco}" />  
