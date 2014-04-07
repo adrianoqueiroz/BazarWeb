@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package model;
 
 import java.io.Serializable;
@@ -15,10 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -39,36 +37,49 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Funcionario.findBySexo", query = "SELECT f FROM Funcionario f WHERE f.sexo = :sexo"),
     @NamedQuery(name = "Funcionario.findByEmail", query = "SELECT f FROM Funcionario f WHERE f.email = :email"),
     @NamedQuery(name = "Funcionario.findByUsuario", query = "SELECT f FROM Funcionario f WHERE f.usuario = :usuario"),
-    @NamedQuery(name = "Funcionario.findBySenha", query = "SELECT f FROM Funcionario f WHERE f.senha = :senha"),
-    @NamedQuery(name = "Funcionario.findByIsAdmin", query = "SELECT f FROM Funcionario f WHERE f.isAdmin = :isAdmin")})
+    @NamedQuery(name = "Funcionario.findBySenha", query = "SELECT f FROM Funcionario f WHERE f.senha = :senha")})
 public class Funcionario implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "nome")
     private String nome;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "cpf")
     private String cpf;
+    @Size(max = 45)
     @Column(name = "telefone")
     private String telefone;
+    @Size(max = 45)
     @Column(name = "sexo")
     private String sexo;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="E-mail inválido")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 45)
     @Column(name = "email")
     private String email;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "usuario")
     private String usuario;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "senha")
     private String senha;
-    @Column(name = "isAdmin")
-    private Boolean isAdmin;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "funcionarioId")
     private Collection<Venda> vendaCollection;
+    @JoinColumn(name = "perfil_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Perfil perfilId;
 
     public Funcionario() {
     }
@@ -149,14 +160,6 @@ public class Funcionario implements Serializable {
         this.senha = senha;
     }
 
-    public Boolean getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(Boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
     @XmlTransient
     public Collection<Venda> getVendaCollection() {
         return vendaCollection;
@@ -164,6 +167,14 @@ public class Funcionario implements Serializable {
 
     public void setVendaCollection(Collection<Venda> vendaCollection) {
         this.vendaCollection = vendaCollection;
+    }
+
+    public Perfil getPerfilId() {
+        return perfilId;
+    }
+
+    public void setPerfilId(Perfil perfilId) {
+        this.perfilId = perfilId;
     }
 
     @Override
@@ -190,5 +201,5 @@ public class Funcionario implements Serializable {
     public String toString() {
         return "model.Funcionario[ id=" + id + " ]";
     }
-    
+
 }

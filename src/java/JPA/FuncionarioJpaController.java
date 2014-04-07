@@ -1,9 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
+import JPA.exceptions.PreexistingEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import model.Perfil;
+import model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,13 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.UserTransaction;
 import model.Funcionario;
-import model.Venda;
 
 /**
  *
@@ -36,7 +43,7 @@ public class FuncionarioJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Funcionario funcionario) throws RollbackFailureException, Exception {
+    public void create(Funcionario funcionario) throws PreexistingEntityException, RollbackFailureException, Exception {
         if (funcionario.getVendaCollection() == null) {
             funcionario.setVendaCollection(new ArrayList<Venda>());
         }
@@ -44,6 +51,11 @@ public class FuncionarioJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
+            Perfil grupoId = funcionario.getPerfilId();
+            if (grupoId != null) {
+                grupoId = em.getReference(grupoId.getClass(), grupoId.getId());
+                funcionario.setPerfilId(grupoId);
+            }
             Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
             for (Venda vendaCollectionVendaToAttach : funcionario.getVendaCollection()) {
                 vendaCollectionVendaToAttach = em.getReference(vendaCollectionVendaToAttach.getClass(), vendaCollectionVendaToAttach.getId());
@@ -51,6 +63,10 @@ public class FuncionarioJpaController implements Serializable {
             }
             funcionario.setVendaCollection(attachedVendaCollection);
             em.persist(funcionario);
+            if (grupoId != null) {
+                grupoId.getFuncionarioCollection().add(funcionario);
+                grupoId = em.merge(grupoId);
+            }
             for (Venda vendaCollectionVenda : funcionario.getVendaCollection()) {
                 Funcionario oldFuncionarioIdOfVendaCollectionVenda = vendaCollectionVenda.getFuncionarioId();
                 vendaCollectionVenda.setFuncionarioId(funcionario);
@@ -67,6 +83,9 @@ public class FuncionarioJpaController implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
+            if (findFuncionario(funcionario.getId()) != null) {
+                throw new PreexistingEntityException("Funcionario " + funcionario + " already exists.", ex);
+            }
             throw ex;
         } finally {
             if (em != null) {
@@ -81,6 +100,8 @@ public class FuncionarioJpaController implements Serializable {
             utx.begin();
             em = getEntityManager();
             Funcionario persistentFuncionario = em.find(Funcionario.class, funcionario.getId());
+            Perfil grupoIdOld = persistentFuncionario.getPerfilId();
+            Perfil grupoIdNew = funcionario.getPerfilId();
             Collection<Venda> vendaCollectionOld = persistentFuncionario.getVendaCollection();
             Collection<Venda> vendaCollectionNew = funcionario.getVendaCollection();
             List<String> illegalOrphanMessages = null;
@@ -95,6 +116,10 @@ public class FuncionarioJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (grupoIdNew != null) {
+                grupoIdNew = em.getReference(grupoIdNew.getClass(), grupoIdNew.getId());
+                funcionario.setPerfilId(grupoIdNew);
+            }
             Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
             for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
                 vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
@@ -103,6 +128,14 @@ public class FuncionarioJpaController implements Serializable {
             vendaCollectionNew = attachedVendaCollectionNew;
             funcionario.setVendaCollection(vendaCollectionNew);
             funcionario = em.merge(funcionario);
+            if (grupoIdOld != null && !grupoIdOld.equals(grupoIdNew)) {
+                grupoIdOld.getFuncionarioCollection().remove(funcionario);
+                grupoIdOld = em.merge(grupoIdOld);
+            }
+            if (grupoIdNew != null && !grupoIdNew.equals(grupoIdOld)) {
+                grupoIdNew.getFuncionarioCollection().add(funcionario);
+                grupoIdNew = em.merge(grupoIdNew);
+            }
             for (Venda vendaCollectionNewVenda : vendaCollectionNew) {
                 if (!vendaCollectionOld.contains(vendaCollectionNewVenda)) {
                     Funcionario oldFuncionarioIdOfVendaCollectionNewVenda = vendaCollectionNewVenda.getFuncionarioId();
@@ -159,6 +192,11 @@ public class FuncionarioJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            Perfil grupoId = funcionario.getPerfilId();
+            if (grupoId != null) {
+                grupoId.getFuncionarioCollection().remove(funcionario);
+                grupoId = em.merge(grupoId);
+            }
             em.remove(funcionario);
             utx.commit();
         } catch (Exception ex) {
@@ -199,6 +237,15 @@ public class FuncionarioJpaController implements Serializable {
         }
     }
 
+    public Funcionario findFuncionario(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Funcionario.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
     public Funcionario findByLogin(String usuario, String senha) {
         EntityManager em = getEntityManager();
 
@@ -210,15 +257,6 @@ public class FuncionarioJpaController implements Serializable {
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
             return null;
-        } finally {
-            em.close();
-        }
-    }
-    
-    public Funcionario findFuncionario(Integer id) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.find(Funcionario.class, id);
         } finally {
             em.close();
         }
@@ -236,5 +274,5 @@ public class FuncionarioJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

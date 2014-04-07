@@ -9,9 +9,9 @@
     <h:form>
         <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
             <h:outputLabel value="Nome Completo: " />
-            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.nome}" /> 
+            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.nome}" required="true" /> 
             <h:outputLabel value="CPF: " />
-            <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.cpf}" />
+            <p:inputMask style="width:350px;" value="#{clienteBean.novoCliente.cpf}" mask="999.999.999-99" />
             <h:outputLabel value="Email: " />  
             <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.email}"/>
             <h:outputLabel value="Telefone: " />  
@@ -26,11 +26,6 @@
                     <f:selectItem itemLabel="Feminino" itemValue="Feminino" />  
                 </p:selectOneRadio>  
             </h:panelGrid>
-
-            <p:outputLabel value="Bairro: "/>
-            <p:selectOneMenu style="width:350px;" >
-                <f:selectItem itemLabel="Selecione..."/>
-            </p:selectOneMenu>
 
             <p:commandButton ajax="false" actionListener="#{clienteBean.create()}" value="Salvar" />
         </h:panelGrid> 

@@ -9,6 +9,7 @@
     <class>model.Item</class>
     <class>model.Produto</class>
     <class>model.Venda</class>
+    <class>model.Perfil</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

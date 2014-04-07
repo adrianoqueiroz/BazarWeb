@@ -11,12 +11,12 @@
             <h:outputLabel value="Nome Completo: " />
             <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.nome}"/> 
             <h:outputLabel value="CPF: " />
-            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.cpf}"/>
+            <p:inputMask style="width:350px;" value="#{funcionarioBean.funcionario.cpf}" mask="999.999.999-99" />
             <h:outputLabel value="Email: " />  
             <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.email}"/>
             <h:outputLabel value="Telefone: " />  
             <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.telefone}"/>
-            
+
             <h:outputText value="Sexo: " />  
             <h:panelGrid columns="2" cellpadding="5">  
                 <p:selectOneRadio id="sexo" value="#{funcionarioBean.funcionario.sexo}" >  
@@ -30,13 +30,12 @@
             <h:outputLabel value="Senha: " />  
             <p:inputText style="width:350px;" type="password" id="senha" value="#{funcionarioBean.funcionario.senha}" />
 
-            <h:outputText value="Administrador: " />  
-            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">  
-                <p:selectOneRadio id="administrador" value="#{funcionarioBean.funcionario.isAdmin}" >  
-                    <f:selectItem itemLabel="Sim" itemValue="#{true}" />  
-                    <f:selectItem itemLabel="Não" itemValue="#{false}" />  
-                </p:selectOneRadio>  
-            </h:panelGrid>        
+            <h:outputText value="Perfil: " /> 
+            <p:selectOneMenu style="width:210px;" id="perfil" value="#{funcionarioBean.idPerfilSelecionado}">
+                <f:selectItem itemLabel="Selecione um Perfil..."/>
+                <f:selectItems value="#{funcionarioBean.selectItemPerfis}" />
+            </p:selectOneMenu>
+
             <p:commandButton ajax="false" value="Salvar" actionListener="#{funcionarioBean.create()}"/>
         </h:panelGrid>
     </h:form>

@@ -2,6 +2,7 @@ package bean;
 
 import JPA.ClienteJpaController;
 import JPA.ProdutoJpaController;
+import java.io.Serializable;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -19,7 +20,7 @@ import model.Venda;
  */
 @ManagedBean
 @ViewScoped
-public class VendaBean {
+public class VendaBean implements Serializable{
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     EntityManagerFactory emf;
     @Resource //inject from your application server
