@@ -8,18 +8,20 @@ package model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Objects;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,8 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Produto.findAll", query = "SELECT p FROM Produto p"),
     @NamedQuery(name = "Produto.findById", query = "SELECT p FROM Produto p WHERE p.id = :id"),
-    @NamedQuery(name = "Produto.findByNome", query = "SELECT p FROM Produto p WHERE p.nome = :nome"),
     @NamedQuery(name = "Produto.findByCodigo", query = "SELECT p FROM Produto p WHERE p.codigo = :codigo"),
+    @NamedQuery(name = "Produto.findByNome", query = "SELECT p FROM Produto p WHERE p.nome = :nome"),
     @NamedQuery(name = "Produto.findByPreco", query = "SELECT p FROM Produto p WHERE p.preco = :preco"),
     @NamedQuery(name = "Produto.findByQuantidade", query = "SELECT p FROM Produto p WHERE p.quantidade = :quantidade")})
 public class Produto implements Serializable {
@@ -43,19 +45,23 @@ public class Produto implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
+    @Column(name = "codigo")
+    private Integer codigo;
+    @Size(max = 255)
     @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @Column(name = "codigo", unique = true)
-    private int codigo;
-    @Basic(optional = false)
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "preco")
-    private float preco;
-    @Basic(optional = false)
+    private Float preco;
     @Column(name = "quantidade")
-    private int quantidade;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "produtoId")
+    private Integer quantidade;
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Categoria categoriaId;
+    @JoinColumn(name = "evento_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Evento eventoId;
+    @OneToMany(mappedBy = "produtoId")
     private Collection<Item> itemCollection;
 
     public Produto() {
@@ -63,14 +69,6 @@ public class Produto implements Serializable {
 
     public Produto(Integer id) {
         this.id = id;
-    }
-
-    public Produto(Integer id, String nome, int codigo, float preco, int quantidade) {
-        this.id = id;
-        this.nome = nome;
-        this.codigo = codigo;
-        this.preco = preco;
-        this.quantidade = quantidade;
     }
 
     public Integer getId() {
@@ -81,6 +79,14 @@ public class Produto implements Serializable {
         this.id = id;
     }
 
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -89,28 +95,36 @@ public class Produto implements Serializable {
         this.nome = nome;
     }
 
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    public float getPreco() {
+    public Float getPreco() {
         return preco;
     }
 
-    public void setPreco(float preco) {
+    public void setPreco(Float preco) {
         this.preco = preco;
     }
 
-    public int getQuantidade() {
+    public Integer getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(int quantidade) {
+    public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public Categoria getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(Categoria categoriaId) {
+        this.categoriaId = categoriaId;
+    }
+
+    public Evento getEventoId() {
+        return eventoId;
+    }
+
+    public void setEventoId(Evento eventoId) {
+        this.eventoId = eventoId;
     }
 
     @XmlTransient
@@ -124,45 +138,23 @@ public class Produto implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.id);
-        hash = 43 * hash + Objects.hashCode(this.nome);
-        hash = 43 * hash + this.codigo;
-        hash = 43 * hash + Float.floatToIntBits(this.preco);
-        hash = 43 * hash + this.quantidade;
-        hash = 43 * hash + Objects.hashCode(this.itemCollection);
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Produto)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Produto other = (Produto) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
-        if (Float.floatToIntBits(this.preco) != Float.floatToIntBits(other.preco)) {
-            return false;
-        }
-        if (this.quantidade != other.quantidade) {
-            return false;
-        }
-        if (!Objects.equals(this.itemCollection, other.itemCollection)) {
+        Produto other = (Produto) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
     }
-
-
-    
 
     @Override
     public String toString() {

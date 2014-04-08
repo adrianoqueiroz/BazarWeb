@@ -12,13 +12,18 @@
                     <h:form>
                         <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
                             <h:outputLabel value="Código: " />
-                            <p:inputText style="width:250px;"  required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
+                            <p:inputText required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
                             <h:outputLabel value="Produto: " />
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
+                            <p:inputText required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
+                            <h:outputLabel value="Categoria: " />
+                            <p:selectOneMenu id="categoria" value="#{produtoBean.idCategoriaSelecionada}">
+                                <f:selectItem itemLabel="Selecione a categoria..."/>
+                                <f:selectItems value="#{produtoBean.selectItemCategorias}" />
+                            </p:selectOneMenu>  
                             <h:outputLabel value="Preço: " />  
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
+                            <p:inputText required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
                             <h:outputLabel value="Quantidade: " />  
-                            <p:inputText style="width:250px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
+                            <p:inputText required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
                             <p:commandButton ajax="false" value="Cancelar" />
                             <p:commandButton ajax="false" actionListener="#{produtoBean.create()}" value="Salvar" />
                         </h:panelGrid>
@@ -29,11 +34,14 @@
                     <h:form>
                         <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single" paginator="true" rows="10"  
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
-                            <p:column headerText="Código">  
+                            <p:column headerText="Código" sortBy="#{produto.codigo}">  
                                 <h:outputText value="#{produto.codigo}" />  
                             </p:column> 
                             <p:column headerText="Produto">  
                                 <h:outputText value="#{produto.nome}" />  
+                            </p:column> 
+                            <p:column headerText="Categoria" sortBy="#{produto.categoriaId.nome}">  
+                                <h:outputText value="#{produto.categoriaId.nome}" />  
                             </p:column> 
                             <p:column headerText="Preço">  
                                 <h:outputText value="R$ #{produto.preco}" />  

@@ -5,9 +5,12 @@
  */
 package bean;
 
+import JPA.CategoriaJpaController;
+import JPA.EventoJpaController;
 import JPA.ProdutoJpaController;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -15,10 +18,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
+import model.Categoria;
+import model.Evento;
 import model.Produto;
 
 /**
@@ -37,6 +42,9 @@ public class ProdutoBean {
     private Produto produto;
     private Collection<Produto> produtoCollection;
     private int estoque;
+    private int idCategoriaSelecionada;
+    
+    
 
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
@@ -66,8 +74,19 @@ public class ProdutoBean {
     public void create() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
+            //TODO: pegar o evento da sessao
+            EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
+            Evento evento = eventoJpaController.findEvento(0);
+            
+            CategoriaJpaController categoriaJpaController = new CategoriaJpaController(utx, emf);
+            Categoria categoria = categoriaJpaController.findCategoria(idCategoriaSelecionada);
+            
+            produto.setEventoId(evento);
+            produto.setCategoriaId(categoria);
+            
             ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
             produtoJpaController.create(produto);
+            
             produto = new Produto();
             context.addMessage(null, new FacesMessage("Produto cadastrado!", produto.getNome()));
 
@@ -88,4 +107,24 @@ public class ProdutoBean {
         this.estoque = estoque;
     }
 
+    public int getIdCategoriaSelecionada() {
+        return idCategoriaSelecionada;
+    }
+
+    public void setIdCategoriaSelecionada(int idCategoriaSelecionada) {
+        this.idCategoriaSelecionada = idCategoriaSelecionada;
+    }
+
+        public List<SelectItem> getSelectItemCategorias() {
+        CategoriaJpaController categoriaJpaController = new CategoriaJpaController((UserTransaction) utx, emf);
+
+        List<Categoria> listaCategorias = categoriaJpaController.findCategoriaEntities();
+        List<SelectItem> itens = new ArrayList<>(listaCategorias.size());
+
+        for (Categoria c : listaCategorias) {
+            itens.add(new SelectItem(c.getId(), c.getNome()));
+
+        }
+        return itens;
+    }
 }

@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
+import JPA.exceptions.PreexistingEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import model.Categoria;
 import model.Item;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +38,7 @@ public class ProdutoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Produto produto) throws RollbackFailureException, Exception {
+    public void create(Produto produto) throws PreexistingEntityException, RollbackFailureException, Exception {
         if (produto.getItemCollection() == null) {
             produto.setItemCollection(new ArrayList<Item>());
         }
@@ -50,6 +46,11 @@ public class ProdutoJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
+            Categoria categoriaId = produto.getCategoriaId();
+            if (categoriaId != null) {
+                categoriaId = em.getReference(categoriaId.getClass(), categoriaId.getId());
+                produto.setCategoriaId(categoriaId);
+            }
             Collection<Item> attachedItemCollection = new ArrayList<Item>();
             for (Item itemCollectionItemToAttach : produto.getItemCollection()) {
                 itemCollectionItemToAttach = em.getReference(itemCollectionItemToAttach.getClass(), itemCollectionItemToAttach.getId());
@@ -57,6 +58,10 @@ public class ProdutoJpaController implements Serializable {
             }
             produto.setItemCollection(attachedItemCollection);
             em.persist(produto);
+            if (categoriaId != null) {
+                categoriaId.getProdutoCollection().add(produto);
+                categoriaId = em.merge(categoriaId);
+            }
             for (Item itemCollectionItem : produto.getItemCollection()) {
                 Produto oldProdutoIdOfItemCollectionItem = itemCollectionItem.getProdutoId();
                 itemCollectionItem.setProdutoId(produto);
@@ -73,6 +78,9 @@ public class ProdutoJpaController implements Serializable {
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
+            if (findProduto(produto.getId()) != null) {
+                throw new PreexistingEntityException("Produto " + produto + " already exists.", ex);
+            }
             throw ex;
         } finally {
             if (em != null) {
@@ -87,6 +95,8 @@ public class ProdutoJpaController implements Serializable {
             utx.begin();
             em = getEntityManager();
             Produto persistentProduto = em.find(Produto.class, produto.getId());
+            Categoria categoriaIdOld = persistentProduto.getCategoriaId();
+            Categoria categoriaIdNew = produto.getCategoriaId();
             Collection<Item> itemCollectionOld = persistentProduto.getItemCollection();
             Collection<Item> itemCollectionNew = produto.getItemCollection();
             List<String> illegalOrphanMessages = null;
@@ -101,6 +111,10 @@ public class ProdutoJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (categoriaIdNew != null) {
+                categoriaIdNew = em.getReference(categoriaIdNew.getClass(), categoriaIdNew.getId());
+                produto.setCategoriaId(categoriaIdNew);
+            }
             Collection<Item> attachedItemCollectionNew = new ArrayList<Item>();
             for (Item itemCollectionNewItemToAttach : itemCollectionNew) {
                 itemCollectionNewItemToAttach = em.getReference(itemCollectionNewItemToAttach.getClass(), itemCollectionNewItemToAttach.getId());
@@ -109,6 +123,14 @@ public class ProdutoJpaController implements Serializable {
             itemCollectionNew = attachedItemCollectionNew;
             produto.setItemCollection(itemCollectionNew);
             produto = em.merge(produto);
+            if (categoriaIdOld != null && !categoriaIdOld.equals(categoriaIdNew)) {
+                categoriaIdOld.getProdutoCollection().remove(produto);
+                categoriaIdOld = em.merge(categoriaIdOld);
+            }
+            if (categoriaIdNew != null && !categoriaIdNew.equals(categoriaIdOld)) {
+                categoriaIdNew.getProdutoCollection().add(produto);
+                categoriaIdNew = em.merge(categoriaIdNew);
+            }
             for (Item itemCollectionNewItem : itemCollectionNew) {
                 if (!itemCollectionOld.contains(itemCollectionNewItem)) {
                     Produto oldProdutoIdOfItemCollectionNewItem = itemCollectionNewItem.getProdutoId();
@@ -165,6 +187,11 @@ public class ProdutoJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            Categoria categoriaId = produto.getCategoriaId();
+            if (categoriaId != null) {
+                categoriaId.getProdutoCollection().remove(produto);
+                categoriaId = em.merge(categoriaId);
+            }
             em.remove(produto);
             utx.commit();
         } catch (Exception ex) {
@@ -214,7 +241,7 @@ public class ProdutoJpaController implements Serializable {
         }
     }
 
-        public Produto findByCodigo(Integer codigo) {
+    public Produto findByCodigo(Integer codigo) {
         EntityManager em = getEntityManager();
 
         try {
@@ -241,5 +268,5 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
