@@ -8,7 +8,7 @@
 
     <h:form>
         <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda"> 
-            <h:outputLabel value="Nome Completo: " />
+            <h:outputLabel value="Nome: " />
             <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.nome}"/> 
             <h:outputLabel value="CPF: " />
             <p:inputMask style="width:350px;" value="#{funcionarioBean.funcionario.cpf}" mask="999.999.999-99" />
@@ -35,7 +35,8 @@
                 <f:selectItem itemLabel="Selecione um Perfil..."/>
                 <f:selectItems value="#{funcionarioBean.selectItemPerfis}" />
             </p:selectOneMenu>
-
+            
+            <p:commandButton ajax="false" value="Cancelar" oncomplete="PF('cadFuncionario').hide();" />
             <p:commandButton ajax="false" value="Salvar" actionListener="#{funcionarioBean.create()}"/>
         </h:panelGrid>
     </h:form>

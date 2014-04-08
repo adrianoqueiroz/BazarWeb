@@ -48,43 +48,35 @@
 
                     <p:panel header="Carrinho de Compras">
                         <h:form id="carrinhoCompras">
-                            <center>
-                                <p:dataTable id="tabelaCarrinho" 
-                                             scrollable="true" 
-                                             var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
+                            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">  
 
-                                    <p:column headerText="Cód.">  
-                                        <h:outputText value="#{itemVenda.produtoId.codigo}" />  
-                                    </p:column>  
-
-                                    <p:column headerText="Produto">  
-                                        <h:outputText value="#{itemVenda.produtoId.nome}" />  
-                                    </p:column>  
-
-                                    <p:column headerText="Quantidade">
-                                        <h:outputText value="#{itemVenda.quantidade}" />
-                                    </p:column>
-
-                                    <p:column headerText="Preço">  
-                                        <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
-                                    </p:column>  
-
-                                    <p:column headerText="Total">  
-                                        <h:outputText value="R$#{itemVenda.total}" />  
-                                    </p:column> 
-
-                                    <p:column>
-                                        <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
-                                        <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  
-                                        <p:commandButton ajax="false" update="div_central:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
-                                    </p:column>
-
-                                    <f:facet name="footer">
-                                        Total de Itens #{vendaBean.venda.itemCollection.size()}
-                                    </f:facet>
-
-                                </p:dataTable>
-                            </center> 
+                                <p:column headerText="Cód.">  
+                                    <h:outputText value="#{itemVenda.produtoId.codigo}" />  
+                                </p:column>  
+                                <p:column headerText="Produto">  
+                                    <h:outputText value="#{itemVenda.produtoId.nome}" />  
+                                </p:column>  
+                                <p:column headerText="Categoria">  
+                                    <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
+                                </p:column>  
+                                <p:column headerText="Quantidade">
+                                    <h:outputText value="#{itemVenda.quantidade}" />
+                                </p:column>
+                                <p:column headerText="Preço">  
+                                    <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
+                                </p:column>  
+                                <p:column headerText="Total">  
+                                    <h:outputText value="R$#{itemVenda.total}" />  
+                                </p:column> 
+                                <p:column>
+                                    <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
+                                    <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  
+                                    <p:commandButton ajax="false" update="div_central:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
+                                </p:column>
+                                <f:facet name="footer">
+                                    Total de Itens #{vendaBean.venda.itemCollection.size()}
+                                </f:facet>
+                            </p:dataTable>
                         </h:form>
                     </p:panel>
                 </h:panelGrid>
