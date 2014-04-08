@@ -145,7 +145,7 @@ public class VendaBean implements Serializable {
         if (quantidade <= quantidadeMaxima) {
             item.setQuantidade(quantidade);
         } else {
-            context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima permitida são " + quantidadeMaxima + "itens!"));
+            context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima atingida!"));
         }
 
         calculaValorCompra();

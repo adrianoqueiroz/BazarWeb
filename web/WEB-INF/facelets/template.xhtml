@@ -50,12 +50,8 @@
                             <p:menuitem value="Sair" icon="ui-icon-close" />
                         </p:submenu>
 
-                        <p:submenu label="Produtos" icon="ui-icon-tag">
-                            <p:menuitem value="Cadastrar" update=":dialogCadProduto" oncomplete="PF('cadProduto').show();" icon="ui-icon-arrowreturnthick-1-w" />
-                            <p:menuitem value="Listar" icon="ui-icon-arrowreturnthick-1-e" />
-                            <p:menuitem value="Editar" icon="ui-icon-arrowreturnthick-1-w" />
-                        </p:submenu>
-
+                        <p:menuitem value="Produtos" url="/login.xhtml" icon="ui-icon-tag"/>
+                        
                         <p:submenu label="Cadastro" icon="ui-icon-person">
                             <p:menuitem value="Cliente" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
                             <p:menuitem value="Funcionário" update=":dialogCadFuncionario" oncomplete="PF('cadFuncionario').show();"/>

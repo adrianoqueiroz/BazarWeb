@@ -11,8 +11,8 @@
     </h:head>
 
     <h:body>
-        <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
         <div id="div_geral">
+            <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
             <div id="div_logo">
                 <img alt="logo" id="logo" src="imagens/logo.png"/>
             </div>
@@ -36,7 +36,7 @@
                                         <f:selectItem itemLabel="Selecione um Evento..."/>
                                         <f:selectItems value="#{loginBean.selectItemEventos}" />
                                     </p:selectOneMenu>                      
-                                    <p:commandButton id="botao_login" ajax="false" value="Login" action="/index.xhtml" actionListener="#{loginBean.efetuaLogin()}"/>
+                                    <p:commandButton id="botao_login" ajax="false" value="Login" action="#{loginBean.efetuaLogin()}"/>
                                 </h:panelGrid>
 
                             </h:panelGrid>

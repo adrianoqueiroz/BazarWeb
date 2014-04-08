@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManagerFactory;
@@ -24,7 +25,7 @@ import model.Funcionario;
  */
 @ManagedBean
 @SessionScoped
-public class LoginBean implements Serializable{
+public class LoginBean implements Serializable {
 
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     EntityManagerFactory emf;
@@ -80,6 +81,8 @@ public class LoginBean implements Serializable{
 
     public void efetuaLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        String url = "index.xhtml";
 
         try {
             FuncionarioJpaController funcionarioJpaController = new FuncionarioJpaController(utx, emf);
@@ -88,7 +91,10 @@ public class LoginBean implements Serializable{
             eventoSelecionado = eventoJpaController.findEvento(idEventoSelecionado);
 
             if (funcionarioLogado != null && eventoSelecionado != null) {
-                context.addMessage(null, new FacesMessage("Login Efetuado!", funcionarioLogado.getNome() + ", " + eventoSelecionado.getNome()));
+                if (eventoSelecionado.getIsActive()) {
+                    context.addMessage(null, new FacesMessage("Login Efetuado!", funcionarioLogado.getNome() + ", " + eventoSelecionado.getNome()));
+                    externalContext.redirect(url);
+                }
             }
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage("Erro no Login", "Usuário e/ou senha incorreto!"));

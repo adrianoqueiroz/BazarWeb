@@ -46,29 +46,31 @@
 
                 <h:panelGrid>
 
-                    <p:panel header="Carrinho de Compras">
+                    <p:panel header="Carrinho de Compras" >
                         <h:form id="carrinhoCompras">
-                            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">  
+                            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" 
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         emptyMessage="Nenhum produto no carrinho" style="width: 650px; height: 350px">  
 
-                                <p:column headerText="Cód.">  
+                                <p:column headerText="Código" style="text-align: center;">  
                                     <h:outputText value="#{itemVenda.produtoId.codigo}" />  
                                 </p:column>  
-                                <p:column headerText="Produto">  
+                                <p:column headerText="Produto" style="text-align: center;">  
                                     <h:outputText value="#{itemVenda.produtoId.nome}" />  
                                 </p:column>  
-                                <p:column headerText="Categoria">  
+                                <p:column headerText="Categoria" style="text-align: center;">  
                                     <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
                                 </p:column>  
-                                <p:column headerText="Quantidade">
+                                <p:column headerText="Quantidade" style="text-align: center;">
                                     <h:outputText value="#{itemVenda.quantidade}" />
                                 </p:column>
-                                <p:column headerText="Preço">  
+                                <p:column headerText="Preço" style="text-align: center;">  
                                     <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
                                 </p:column>  
-                                <p:column headerText="Total">  
+                                <p:column headerText="Total" style="text-align: center;">  
                                     <h:outputText value="R$#{itemVenda.total}" />  
                                 </p:column> 
-                                <p:column>
+                                <p:column style="text-align: center;"> 
                                     <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
                                     <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  
                                     <p:commandButton ajax="false" update="div_central:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
