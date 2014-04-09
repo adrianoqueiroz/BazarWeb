@@ -10,7 +10,7 @@
             <h:panelGrid columns="2"> 
                 <h:panelGrid>
                     <h:form>
-                        <p:panel header="Inserir Produto">
+                        <p:panel id="opnl" header="Inserir Produto">
                             <h:outputLabel value="Código do Produto: " /> 
                             <h:panelGrid id="codProduto" columns="3"> 
                                 <p:focus for="codigo"/>
@@ -37,7 +37,15 @@
                                 <h:outputLabel value="Cliente: #{vendaBean.venda.clienteId.nome}" />  
                                 <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" /> 
                                 <h:outputText value="Valor Total: R$#{vendaBean.valorCompra}" />
-                                <p:commandButton ajax="false" value="Finalizar Venda" /> 
+
+                                <p:commandButton value="Finalizar Venda" update="detalhesVenda">
+                                    <p:confirm header="Confirmação" message="Valor recebido: R$#{vendaBean.valorCompra}. Você confirma?" icon="ui-icon-alert" />
+                                </p:commandButton> 
+
+                                <p:confirmDialog  global="true" showEffect="fade" hideEffect="explode">  
+                                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                                </p:confirmDialog>  
                             </h:panelGrid>
                         </p:panel>
                     </h:form>
@@ -45,7 +53,6 @@
                 </h:panelGrid>
 
                 <h:panelGrid>
-
                     <p:panel header="Carrinho de Compras" >
                         <h:form id="carrinhoCompras">
                             <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" 
@@ -61,22 +68,28 @@
                                 <p:column headerText="Categoria" style="text-align: center;">  
                                     <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
                                 </p:column>  
-                                <p:column headerText="Quantidade" style="text-align: center;">
-                                    <h:outputText value="#{itemVenda.quantidade}" />
-                                </p:column>
                                 <p:column headerText="Preço" style="text-align: center;">  
                                     <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
                                 </p:column>  
+                                <p:column headerText="Quantidade" style="text-align: center;">
+                                    <h:outputText value="#{itemVenda.quantidade}" />
+                                </p:column>
                                 <p:column headerText="Total" style="text-align: center;">  
                                     <h:outputText value="R$#{itemVenda.total}" />  
                                 </p:column> 
                                 <p:column style="text-align: center;"> 
-                                    <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
-                                    <p:commandButton ajax="false" update="div_central:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  
-                                    <p:commandButton ajax="false" update="div_central:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
+                                    <p:commandButton ajax="false" update="area_venda:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
+                                    <p:spacer width="2px"/>
+                                    <p:commandButton ajax="false" update="area_venda:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  
+                                    <p:spacer width="2px"/>
+                                    <p:commandButton ajax="false" update="area_venda:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
                                 </p:column>
                                 <f:facet name="footer">
+                                    <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
+                                        <p:printer target="tabelaCarrinho" /> 
+                                    </p:commandButton> 
                                     Total de Itens #{vendaBean.venda.itemCollection.size()}
+
                                 </f:facet>
                             </p:dataTable>
                         </h:form>

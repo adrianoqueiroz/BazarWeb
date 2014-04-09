@@ -4,6 +4,7 @@ import JPA.ClienteJpaController;
 import JPA.ProdutoJpaController;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -60,6 +61,7 @@ public class VendaBean implements Serializable {
     }
 
     public float getValorCompra() {
+        valorCompra = calculaValorCompra();
         return valorCompra;
     }
 
@@ -74,7 +76,7 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         for (Item i : venda.getItemCollection()) {
-            if (i.getProdutoId().getCodigo() == codigoProcurado) {
+            if (Objects.equals(i.getProdutoId().getCodigo(), codigoProcurado)) {
                 inserir = false;
                 context.addMessage(null, new FacesMessage("Falha", "O produto já está na lista!"));
                 break;
@@ -102,7 +104,6 @@ public class VendaBean implements Serializable {
         String nomeProduto = item.getProdutoId().getNome();
         venda.getItemCollection().remove(item);
         context.addMessage(null, new FacesMessage(nomeProduto, "Produto removido do carrinho!"));
-        calculaValorCompra();
     }
 
     public void buscarCliente() {
@@ -128,11 +129,12 @@ public class VendaBean implements Serializable {
         return null;
     }
 
-    public void calculaValorCompra() {
-        valorCompra = 0;
+    public float calculaValorCompra() {
+        int valor = 0;
         for (Item i : venda.getItemCollection()) {
-            valorCompra += i.getPrecoCompra() * i.getQuantidade();
+            valor += i.getPrecoCompra() * i.getQuantidade();
         }
+        return valor;
     }
 
     public void incrementaQuantidade(Item item) {
@@ -148,7 +150,7 @@ public class VendaBean implements Serializable {
             context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima atingida!"));
         }
 
-        calculaValorCompra();
+        
     }
 
     public void decrementaQuantidade(Item item) {
@@ -158,8 +160,6 @@ public class VendaBean implements Serializable {
         if (quantidade > 0) {
             item.setQuantidade(quantidade);
         }
-
-        calculaValorCompra();
     }
 
     public void finalizarVenda() {
