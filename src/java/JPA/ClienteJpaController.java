@@ -31,8 +31,10 @@ import model.Venda;
  */
 @Stateless
 public class ClienteJpaController implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
+    
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -62,10 +64,6 @@ public class ClienteJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -113,10 +111,6 @@ public class ClienteJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = cliente.getId();
@@ -156,10 +150,6 @@ public class ClienteJpaController implements Serializable {
             }
             em.remove(cliente);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -216,12 +206,12 @@ public class ClienteJpaController implements Serializable {
         }
     }
 
-        public Collection<Cliente> findByLikeNome(String nome) {
+    public Collection<Cliente> findByLikeNome(String nome) {
         EntityManager em = getEntityManager();
 
         try {
             Query query = em.createNamedQuery("Cliente.findByLikeNome");
-            query.setParameter("nome", "%"+nome+"%");
+            query.setParameter("nome", "%" + nome + "%");
             return (Collection<Cliente>) query.getResultList();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
@@ -230,7 +220,7 @@ public class ClienteJpaController implements Serializable {
             em.close();
         }
     }
-        
+
     public int getClienteCount() {
         EntityManager em = getEntityManager();
         try {

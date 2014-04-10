@@ -1,16 +1,15 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
-import JPA.exceptions.PreexistingEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import model.Categoria;
-import model.Item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +18,13 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import model.Categoria;
+import model.Item;
 import model.Produto;
 
 /**
@@ -28,14 +33,15 @@ import model.Produto;
  */
 @Stateless
 public class ProdutoJpaController implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
- 
+
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Produto produto) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Produto produto) throws RollbackFailureException, Exception {
         if (produto.getItemCollection() == null) {
             produto.setItemCollection(new ArrayList<Item>());
         }
@@ -68,13 +74,6 @@ public class ProdutoJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
-            if (findProduto(produto.getId()) != null) {
-                throw new PreexistingEntityException("Produto " + produto + " already exists.", ex);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -136,10 +135,6 @@ public class ProdutoJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = produto.getId();
@@ -184,10 +179,6 @@ public class ProdutoJpaController implements Serializable {
             }
             em.remove(produto);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -229,7 +220,7 @@ public class ProdutoJpaController implements Serializable {
         }
     }
 
-    public Produto findByCodigo(Integer codigo) {
+        public Produto findByCodigo(Integer codigo) {
         EntityManager em = getEntityManager();
 
         try {
@@ -243,7 +234,7 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
-
+        
     public int getProdutoCount() {
         EntityManager em = getEntityManager();
         try {
@@ -256,5 +247,5 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

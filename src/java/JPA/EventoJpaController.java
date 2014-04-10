@@ -10,21 +10,19 @@ import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.transaction.UserTransaction;
 import model.Evento;
-import model.Venda;
 
 /**
  *
@@ -32,9 +30,9 @@ import model.Venda;
  */
 @Stateless
 public class EventoJpaController implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
-
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -63,10 +61,6 @@ public class EventoJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -114,10 +108,6 @@ public class EventoJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = evento.getId();
@@ -157,10 +147,6 @@ public class EventoJpaController implements Serializable {
             }
             em.remove(evento);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {

@@ -1,8 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
-import JPA.exceptions.PreexistingEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -25,14 +30,15 @@ import model.Categoria;
  */
 @Stateless
 public class CategoriaJpaController implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
-
+    
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Categoria categoria) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Categoria categoria) throws RollbackFailureException, Exception {
         if (categoria.getProdutoCollection() == null) {
             categoria.setProdutoCollection(new ArrayList<Produto>());
         }
@@ -56,13 +62,6 @@ public class CategoriaJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
-            if (findCategoria(categoria.getId()) != null) {
-                throw new PreexistingEntityException("Categoria " + categoria + " already exists.", ex);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -110,10 +109,6 @@ public class CategoriaJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = categoria.getId();
@@ -153,10 +148,6 @@ public class CategoriaJpaController implements Serializable {
             }
             em.remove(categoria);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {

@@ -33,9 +33,10 @@ import model.Venda;
  */
 @Stateless
 public class VendaJpaController implements Serializable {
+
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
-
+    
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -91,10 +92,6 @@ public class VendaJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -184,10 +181,6 @@ public class VendaJpaController implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = venda.getId();
@@ -242,10 +235,6 @@ public class VendaJpaController implements Serializable {
             }
             em.remove(venda);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {

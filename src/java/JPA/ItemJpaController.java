@@ -31,6 +31,7 @@ public class ItemJpaController implements Serializable {
 
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
+    
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -59,10 +60,6 @@ public class ItemJpaController implements Serializable {
                 vendaId = em.merge(vendaId);
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -106,10 +103,6 @@ public class ItemJpaController implements Serializable {
                 vendaIdNew = em.merge(vendaIdNew);
             }
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = item.getId();
@@ -148,10 +141,6 @@ public class ItemJpaController implements Serializable {
             }
             em.remove(item);
         } catch (Exception ex) {
-            try {
-            } catch (Exception re) {
-                throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
-            }
             throw ex;
         } finally {
             if (em != null) {
