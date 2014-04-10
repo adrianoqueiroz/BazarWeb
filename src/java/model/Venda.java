@@ -49,7 +49,7 @@ public class Venda implements Serializable {
     @Column(name = "data_venda")
     @Temporal(TemporalType.DATE)
     private Date dataVenda;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "compraId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vendaId")
     private Collection<Item> itemCollection;
     @JoinColumn(name = "evento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)

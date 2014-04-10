@@ -2,12 +2,16 @@ package bean;
 
 import JPA.ClienteJpaController;
 import JPA.ProdutoJpaController;
+import JPA.VendaJpaController;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.Cliente;
@@ -21,6 +25,9 @@ import model.Venda;
 @ManagedBean
 @ViewScoped
 public class VendaBean implements Serializable {
+    @ManagedProperty(value = "#{loginBean}")
+    private LoginBean loginBean;
+
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
@@ -30,6 +37,10 @@ public class VendaBean implements Serializable {
     private ProdutoJpaController produtoJpaController;
     @EJB
     private ClienteJpaController clienteJpaController;
+    @EJB
+    private VendaJpaController vendaJpaController;
+    
+    
 
     public Venda getVenda() {
         return venda;
@@ -80,7 +91,7 @@ public class VendaBean implements Serializable {
             try {
                 Item item = new Item();
                 item.setProdutoId(produtoJpaController.findByCodigo(codigoProcurado));
-                item.setPrecoCompra(item.getProdutoId().getPreco());
+                item.setPrecoVenda(item.getProdutoId().getPreco());
                 item.setQuantidade(1);
                 venda.getItemCollection().add(item);
                 calculaValorCompra();
@@ -123,7 +134,7 @@ public class VendaBean implements Serializable {
     public float calculaValorCompra() {
         int valor = 0;
         for (Item i : venda.getItemCollection()) {
-            valor += i.getPrecoCompra() * i.getQuantidade();
+            valor += i.getPrecoVenda() * i.getQuantidade();
         }
         return valor;
     }
@@ -141,7 +152,6 @@ public class VendaBean implements Serializable {
             context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima atingida!"));
         }
 
-        
     }
 
     public void decrementaQuantidade(Item item) {
@@ -154,9 +164,17 @@ public class VendaBean implements Serializable {
     }
 
     public void finalizarVenda() {
-        LoginBean loginBean = new LoginBean();
+        FacesContext context = FacesContext.getCurrentInstance();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
+        
+        try {
+            vendaJpaController.create(venda);
+            context.addMessage(null, new FacesMessage("Sucesso", "Venda concluida!"));
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage("Falha", "Erro ao persistir os dados!"));
+            Logger.getLogger(VendaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public String getNomeProcurado() {
@@ -165,5 +183,9 @@ public class VendaBean implements Serializable {
 
     public void setNomeProcurado(String nomeProcurado) {
         this.nomeProcurado = nomeProcurado;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 }

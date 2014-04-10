@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
     @NamedQuery(name = "Item.findByQuantidade", query = "SELECT i FROM Item i WHERE i.quantidade = :quantidade"),
     @NamedQuery(name = "Item.findByDesconto", query = "SELECT i FROM Item i WHERE i.desconto = :desconto"),
-    @NamedQuery(name = "Item.findByPrecoCompra", query = "SELECT i FROM Item i WHERE i.precoCompra = :precoCompra")})
+    @NamedQuery(name = "Item.findByPrecoVenda", query = "SELECT i FROM Item i WHERE i.precoVenda = :precoVenda")})
 public class Item implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,14 +41,14 @@ public class Item implements Serializable {
     @Column(name = "desconto")
     private Float desconto;
     @Basic(optional = false)
-    @Column(name = "preco_compra")
-    private float precoCompra;
+    @Column(name = "preco_venda")
+    private float precoVenda;
     @JoinColumn(name = "produto_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Produto produtoId;
-    @JoinColumn(name = "compra_id", referencedColumnName = "id")
+    @JoinColumn(name = "venda_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Venda compraId;
+    private Venda vendaId;
     private Float total;
     
     public Item() {
@@ -61,7 +61,7 @@ public class Item implements Serializable {
     public Item(Integer id, int quantidade, float precoCompra) {
         this.id = id;
         this.quantidade = quantidade;
-        this.precoCompra = precoCompra;
+        this.precoVenda = precoCompra;
     }
 
     public Integer getId() {
@@ -88,12 +88,12 @@ public class Item implements Serializable {
         this.desconto = desconto;
     }
 
-    public float getPrecoCompra() {
-        return precoCompra;
+    public float getPrecoVenda() {
+        return precoVenda;
     }
 
-    public void setPrecoCompra(float precoCompra) {
-        this.precoCompra = precoCompra;
+    public void setPrecoVenda(float precoVenda) {
+        this.precoVenda = precoVenda;
     }
 
     public Produto getProdutoId() {
@@ -104,16 +104,16 @@ public class Item implements Serializable {
         this.produtoId = produtoId;
     }
 
-    public Venda getCompraId() {
-        return compraId;
+    public Venda getVendaId() {
+        return vendaId;
     }
 
-    public void setCompraId(Venda compraId) {
-        this.compraId = compraId;
+    public void setVendaId(Venda vendaId) {
+        this.vendaId = vendaId;
     }
 
     public Float getTotal() {
-        total = getQuantidade() * getPrecoCompra();
+        total = getQuantidade() * getPrecoVenda();
         return total;
     }
 
@@ -127,9 +127,9 @@ public class Item implements Serializable {
         hash = 11 * hash + Objects.hashCode(this.id);
         hash = 11 * hash + this.quantidade;
         hash = 11 * hash + Objects.hashCode(this.desconto);
-        hash = 11 * hash + Float.floatToIntBits(this.precoCompra);
+        hash = 11 * hash + Float.floatToIntBits(this.precoVenda);
         hash = 11 * hash + Objects.hashCode(this.produtoId);
-        hash = 11 * hash + Objects.hashCode(this.compraId);
+        hash = 11 * hash + Objects.hashCode(this.vendaId);
         return hash;
     }
 
@@ -151,13 +151,13 @@ public class Item implements Serializable {
         if (!Objects.equals(this.desconto, other.desconto)) {
             return false;
         }
-        if (Float.floatToIntBits(this.precoCompra) != Float.floatToIntBits(other.precoCompra)) {
+        if (Float.floatToIntBits(this.precoVenda) != Float.floatToIntBits(other.precoVenda)) {
             return false;
         }
         if (!Objects.equals(this.produtoId, other.produtoId)) {
             return false;
         }
-        if (!Objects.equals(this.compraId, other.compraId)) {
+        if (!Objects.equals(this.vendaId, other.vendaId)) {
             return false;
         }
         return true;

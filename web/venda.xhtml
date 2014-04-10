@@ -38,7 +38,7 @@
                                 <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" /> 
                                 <h:outputText value="Valor Total: R$#{vendaBean.valorCompra}" />
 
-                                <p:commandButton value="Finalizar Venda" update="detalhesVenda">
+                                <p:commandButton value="Finalizar Venda" action="#{vendaBean.finalizarVenda()}" update="detalhesVenda">
                                     <p:confirm header="Confirmação" message="Valor recebido: R$#{vendaBean.valorCompra}. Você confirma?" icon="ui-icon-alert" />
                                 </p:commandButton> 
 

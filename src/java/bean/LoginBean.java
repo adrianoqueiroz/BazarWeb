@@ -21,7 +21,7 @@ import model.Funcionario;
  * @author Adriano
  */
 
-@ManagedBean
+@ManagedBean (name = "loginBean")
 @SessionScoped
 public class LoginBean implements Serializable {
     private Collection<Evento> eventos;

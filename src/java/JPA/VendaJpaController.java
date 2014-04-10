@@ -10,22 +10,21 @@ import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import model.Evento;
-import model.Funcionario;
-import model.Cliente;
-import model.Item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceUnit;
-import javax.transaction.UserTransaction;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import model.Cliente;
+import model.Evento;
+import model.Funcionario;
+import model.Item;
 import model.Venda;
 
 /**
@@ -83,12 +82,12 @@ public class VendaJpaController implements Serializable {
                 clienteId = em.merge(clienteId);
             }
             for (Item itemCollectionItem : venda.getItemCollection()) {
-                Venda oldCompraIdOfItemCollectionItem = itemCollectionItem.getCompraId();
-                itemCollectionItem.setCompraId(venda);
+                Venda oldVendaIdOfItemCollectionItem = itemCollectionItem.getVendaId();
+                itemCollectionItem.setVendaId(venda);
                 itemCollectionItem = em.merge(itemCollectionItem);
-                if (oldCompraIdOfItemCollectionItem != null) {
-                    oldCompraIdOfItemCollectionItem.getItemCollection().remove(itemCollectionItem);
-                    oldCompraIdOfItemCollectionItem = em.merge(oldCompraIdOfItemCollectionItem);
+                if (oldVendaIdOfItemCollectionItem != null) {
+                    oldVendaIdOfItemCollectionItem.getItemCollection().remove(itemCollectionItem);
+                    oldVendaIdOfItemCollectionItem = em.merge(oldVendaIdOfItemCollectionItem);
                 }
             }
         } catch (Exception ex) {
@@ -123,7 +122,7 @@ public class VendaJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Item " + itemCollectionOldItem + " since its compraId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Item " + itemCollectionOldItem + " since its vendaId field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -175,12 +174,12 @@ public class VendaJpaController implements Serializable {
             }
             for (Item itemCollectionNewItem : itemCollectionNew) {
                 if (!itemCollectionOld.contains(itemCollectionNewItem)) {
-                    Venda oldCompraIdOfItemCollectionNewItem = itemCollectionNewItem.getCompraId();
-                    itemCollectionNewItem.setCompraId(venda);
+                    Venda oldVendaIdOfItemCollectionNewItem = itemCollectionNewItem.getVendaId();
+                    itemCollectionNewItem.setVendaId(venda);
                     itemCollectionNewItem = em.merge(itemCollectionNewItem);
-                    if (oldCompraIdOfItemCollectionNewItem != null && !oldCompraIdOfItemCollectionNewItem.equals(venda)) {
-                        oldCompraIdOfItemCollectionNewItem.getItemCollection().remove(itemCollectionNewItem);
-                        oldCompraIdOfItemCollectionNewItem = em.merge(oldCompraIdOfItemCollectionNewItem);
+                    if (oldVendaIdOfItemCollectionNewItem != null && !oldVendaIdOfItemCollectionNewItem.equals(venda)) {
+                        oldVendaIdOfItemCollectionNewItem.getItemCollection().remove(itemCollectionNewItem);
+                        oldVendaIdOfItemCollectionNewItem = em.merge(oldVendaIdOfItemCollectionNewItem);
                     }
                 }
             }
@@ -221,7 +220,7 @@ public class VendaJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Venda (" + venda + ") cannot be destroyed since the Item " + itemCollectionOrphanCheckItem + " in its itemCollection field has a non-nullable compraId field.");
+                illegalOrphanMessages.add("This Venda (" + venda + ") cannot be destroyed since the Item " + itemCollectionOrphanCheckItem + " in its itemCollection field has a non-nullable vendaId field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
