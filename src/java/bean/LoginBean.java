@@ -6,16 +6,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.transaction.UserTransaction;
 import model.Evento;
 import model.Funcionario;
 
@@ -23,21 +20,20 @@ import model.Funcionario;
  *
  * @author Adriano
  */
+
 @ManagedBean
 @SessionScoped
 public class LoginBean implements Serializable {
-
-    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
-    EntityManagerFactory emf;
-    @Resource //inject from your application server
-    UserTransaction utx;
-
     private Collection<Evento> eventos;
     private Evento eventoSelecionado = new Evento();
     private Funcionario funcionarioLogado = new Funcionario();
     private String usuario;
     private String senha;
     private Integer idEventoSelecionado;
+    @EJB
+    private FuncionarioJpaController funcionarioJpaController;
+    @EJB
+    private EventoJpaController eventoJpaController;
 
     public Integer getIdEventoSelecionado() {
         return idEventoSelecionado;
@@ -85,9 +81,9 @@ public class LoginBean implements Serializable {
         String url = "index.xhtml";
 
         try {
-            FuncionarioJpaController funcionarioJpaController = new FuncionarioJpaController(utx, emf);
             funcionarioLogado = funcionarioJpaController.findByLogin(usuario, senha);
-            EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
+            
+            
             eventoSelecionado = eventoJpaController.findEvento(idEventoSelecionado);
 
             if (funcionarioLogado != null && eventoSelecionado != null) {
@@ -102,8 +98,6 @@ public class LoginBean implements Serializable {
     }
 
     public List<SelectItem> getSelectItemEventos() {
-        EventoJpaController eventoJpaController = new EventoJpaController((UserTransaction) utx, emf);
-
         List<Evento> listaEventos = eventoJpaController.findEventoEntities();
         List<SelectItem> itens = new ArrayList<>(listaEventos.size());
 
@@ -115,8 +109,6 @@ public class LoginBean implements Serializable {
     }
 
     public Collection<Evento> getEventos() {
-        EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
-
         eventos = eventoJpaController.findEventoEntities();
         return eventos;
     }

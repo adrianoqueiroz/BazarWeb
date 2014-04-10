@@ -9,33 +9,30 @@ import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import model.Cliente;
+import model.Venda;
 
 /**
  *
  * @author Adriano
  */
+@Stateless
 public class ClienteJpaController implements Serializable {
-
-    public ClienteJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -47,7 +44,6 @@ public class ClienteJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
             for (Venda vendaCollectionVendaToAttach : cliente.getVendaCollection()) {
@@ -65,10 +61,8 @@ public class ClienteJpaController implements Serializable {
                     oldClienteIdOfVendaCollectionVenda = em.merge(oldClienteIdOfVendaCollectionVenda);
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -83,7 +77,6 @@ public class ClienteJpaController implements Serializable {
     public void edit(Cliente cliente) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Cliente persistentCliente = em.find(Cliente.class, cliente.getId());
             Collection<Venda> vendaCollectionOld = persistentCliente.getVendaCollection();
@@ -119,10 +112,8 @@ public class ClienteJpaController implements Serializable {
                     }
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -144,7 +135,6 @@ public class ClienteJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Cliente cliente;
             try {
@@ -165,10 +155,8 @@ public class ClienteJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(cliente);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

@@ -5,14 +5,11 @@ import JPA.ProdutoJpaController;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.transaction.UserTransaction;
 import model.Cliente;
 import model.Item;
 import model.Venda;
@@ -24,17 +21,15 @@ import model.Venda;
 @ManagedBean
 @ViewScoped
 public class VendaBean implements Serializable {
-
-    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
-    EntityManagerFactory emf;
-    @Resource //inject from your application server
-    UserTransaction utx;
-
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
     private String nomeProcurado;
     private float valorCompra;
+    @EJB
+    private ProdutoJpaController produtoJpaController;
+    @EJB
+    private ClienteJpaController clienteJpaController;
 
     public Venda getVenda() {
         return venda;
@@ -70,8 +65,6 @@ public class VendaBean implements Serializable {
     }
 
     public void inserirProduto() {
-
-        ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
         boolean inserir = true;
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -110,7 +103,6 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
-            ClienteJpaController clienteJpaController = new ClienteJpaController(utx, emf);
             venda.setClienteId(clienteJpaController.findByCpf(cpfProcurado));
             context.addMessage(null, new FacesMessage("Cliente Selecionado", venda.getClienteId().getNome()));
         } catch (Exception e) {
@@ -122,7 +114,6 @@ public class VendaBean implements Serializable {
     public Collection<Cliente> buscarClientePorNome() {
 
         try {
-            ClienteJpaController clienteJpaController = new ClienteJpaController(utx, emf);
             return clienteJpaController.findByLikeNome(nomeProcurado);
         } catch (Exception e) {
         }

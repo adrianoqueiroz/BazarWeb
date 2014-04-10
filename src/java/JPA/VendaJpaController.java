@@ -21,8 +21,10 @@ import model.Item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import model.Venda;
 
@@ -30,14 +32,10 @@ import model.Venda;
  *
  * @author Adriano
  */
+@Stateless
 public class VendaJpaController implements Serializable {
-
-    public VendaJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -49,7 +47,6 @@ public class VendaJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Evento eventoId = venda.getEventoId();
             if (eventoId != null) {
@@ -94,10 +91,8 @@ public class VendaJpaController implements Serializable {
                     oldCompraIdOfItemCollectionItem = em.merge(oldCompraIdOfItemCollectionItem);
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -112,7 +107,6 @@ public class VendaJpaController implements Serializable {
     public void edit(Venda venda) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Venda persistentVenda = em.find(Venda.class, venda.getId());
             Evento eventoIdOld = persistentVenda.getEventoId();
@@ -190,10 +184,8 @@ public class VendaJpaController implements Serializable {
                     }
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -215,7 +207,6 @@ public class VendaJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Venda venda;
             try {
@@ -251,10 +242,8 @@ public class VendaJpaController implements Serializable {
                 clienteId = em.merge(clienteId);
             }
             em.remove(venda);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

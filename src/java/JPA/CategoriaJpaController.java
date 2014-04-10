@@ -13,23 +13,20 @@ import model.Produto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
+import javax.persistence.PersistenceUnit;
 import model.Categoria;
 
 /**
  *
  * @author Adriano
  */
+@Stateless
 public class CategoriaJpaController implements Serializable {
-
-    public CategoriaJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -41,7 +38,6 @@ public class CategoriaJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Collection<Produto> attachedProdutoCollection = new ArrayList<Produto>();
             for (Produto produtoCollectionProdutoToAttach : categoria.getProdutoCollection()) {
@@ -59,10 +55,8 @@ public class CategoriaJpaController implements Serializable {
                     oldCategoriaIdOfProdutoCollectionProduto = em.merge(oldCategoriaIdOfProdutoCollectionProduto);
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -80,7 +74,6 @@ public class CategoriaJpaController implements Serializable {
     public void edit(Categoria categoria) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Categoria persistentCategoria = em.find(Categoria.class, categoria.getId());
             Collection<Produto> produtoCollectionOld = persistentCategoria.getProdutoCollection();
@@ -116,10 +109,8 @@ public class CategoriaJpaController implements Serializable {
                     }
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -141,7 +132,6 @@ public class CategoriaJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Categoria categoria;
             try {
@@ -162,10 +152,8 @@ public class CategoriaJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(categoria);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

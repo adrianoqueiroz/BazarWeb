@@ -10,28 +10,25 @@ import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import java.util.List;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.transaction.UserTransaction;
 import model.Perfil;
 
 /**
  *
  * @author Adriano
  */
+@Stateless
 public class PerfilJpaController implements Serializable {
-
-    public PerfilJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
-
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
+    
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -39,13 +36,10 @@ public class PerfilJpaController implements Serializable {
     public void create(Perfil perfil) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             em.persist(perfil);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -60,13 +54,10 @@ public class PerfilJpaController implements Serializable {
     public void edit(Perfil perfil) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             perfil = em.merge(perfil);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -88,7 +79,6 @@ public class PerfilJpaController implements Serializable {
     public void destroy(Integer id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Perfil perfil;
             try {
@@ -98,10 +88,8 @@ public class PerfilJpaController implements Serializable {
                 throw new NonexistentEntityException("The perfil with id " + id + " no longer exists.", enfe);
             }
             em.remove(perfil);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

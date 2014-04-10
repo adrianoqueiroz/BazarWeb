@@ -10,31 +10,30 @@ import JPA.exceptions.IllegalOrphanException;
 import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.UserTransaction;
 import model.Evento;
+import model.Venda;
 
 /**
  *
  * @author Adriano
  */
+@Stateless
 public class EventoJpaController implements Serializable {
-
-    public EventoJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -46,7 +45,6 @@ public class EventoJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
             for (Venda vendaCollectionVendaToAttach : evento.getVendaCollection()) {
@@ -64,10 +62,8 @@ public class EventoJpaController implements Serializable {
                     oldEventoIdOfVendaCollectionVenda = em.merge(oldEventoIdOfVendaCollectionVenda);
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -82,7 +78,6 @@ public class EventoJpaController implements Serializable {
     public void edit(Evento evento) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Evento persistentEvento = em.find(Evento.class, evento.getId());
             Collection<Venda> vendaCollectionOld = persistentEvento.getVendaCollection();
@@ -118,10 +113,8 @@ public class EventoJpaController implements Serializable {
                     }
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -143,7 +136,6 @@ public class EventoJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Evento evento;
             try {
@@ -164,10 +156,8 @@ public class EventoJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(evento);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

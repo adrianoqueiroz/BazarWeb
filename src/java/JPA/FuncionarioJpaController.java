@@ -10,34 +10,33 @@ import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.PreexistingEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import model.Perfil;
-import model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.UserTransaction;
 import model.Funcionario;
+import model.Perfil;
+import model.Venda;
 
 /**
  *
  * @author Adriano
  */
+@Stateless
 public class FuncionarioJpaController implements Serializable {
-
-    public FuncionarioJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
-        this.emf = emf;
-    }
-    private UserTransaction utx = null;
-    private EntityManagerFactory emf = null;
+    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
+    private EntityManagerFactory emf;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -49,7 +48,6 @@ public class FuncionarioJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Perfil grupoId = funcionario.getPerfilId();
             if (grupoId != null) {
@@ -76,10 +74,8 @@ public class FuncionarioJpaController implements Serializable {
                     oldFuncionarioIdOfVendaCollectionVenda = em.merge(oldFuncionarioIdOfVendaCollectionVenda);
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -97,7 +93,6 @@ public class FuncionarioJpaController implements Serializable {
     public void edit(Funcionario funcionario) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Funcionario persistentFuncionario = em.find(Funcionario.class, funcionario.getId());
             Perfil grupoIdOld = persistentFuncionario.getPerfilId();
@@ -147,10 +142,8 @@ public class FuncionarioJpaController implements Serializable {
                     }
                 }
             }
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -172,7 +165,6 @@ public class FuncionarioJpaController implements Serializable {
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
             Funcionario funcionario;
             try {
@@ -198,10 +190,8 @@ public class FuncionarioJpaController implements Serializable {
                 grupoId = em.merge(grupoId);
             }
             em.remove(funcionario);
-            utx.commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

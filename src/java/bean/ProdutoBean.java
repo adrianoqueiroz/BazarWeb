@@ -13,15 +13,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.transaction.UserTransaction;
 import model.Categoria;
 import model.Evento;
 import model.Produto;
@@ -33,16 +30,16 @@ import model.Produto;
 @ManagedBean
 @RequestScoped
 public class ProdutoBean {
-
-    @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
-    EntityManagerFactory emf;
-    @Resource //inject from your application server
-    UserTransaction utx;
-
     private Produto produto;
     private Collection<Produto> produtoCollection;
     private int estoque;
     private int idCategoriaSelecionada;
+    @EJB
+    private EventoJpaController eventoJpaController;
+    @EJB
+    private ProdutoJpaController produtoJpaController;
+    @EJB
+    private CategoriaJpaController categoriaJpaController;
     
     
 
@@ -52,8 +49,6 @@ public class ProdutoBean {
     }
 
     public Collection<Produto> getProdutoCollection() {
-        ProdutoJpaController produtoJpaController;
-        produtoJpaController = new ProdutoJpaController(utx, emf);
 
         produtoCollection = produtoJpaController.findProdutoEntities();
         return produtoCollection;
@@ -75,16 +70,13 @@ public class ProdutoBean {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             //TODO: pegar o evento da sessao
-            EventoJpaController eventoJpaController = new EventoJpaController(utx, emf);
             Evento evento = eventoJpaController.findEvento(0);
             
-            CategoriaJpaController categoriaJpaController = new CategoriaJpaController(utx, emf);
             Categoria categoria = categoriaJpaController.findCategoria(idCategoriaSelecionada);
             
             produto.setEventoId(evento);
             produto.setCategoriaId(categoria);
-            
-            ProdutoJpaController produtoJpaController = new ProdutoJpaController(utx, emf);
+     
             produtoJpaController.create(produto);
             
             produto = new Produto();
@@ -116,7 +108,6 @@ public class ProdutoBean {
     }
 
         public List<SelectItem> getSelectItemCategorias() {
-        CategoriaJpaController categoriaJpaController = new CategoriaJpaController((UserTransaction) utx, emf);
 
         List<Categoria> listaCategorias = categoriaJpaController.findCategoriaEntities();
         List<SelectItem> itens = new ArrayList<>(listaCategorias.size());
