@@ -24,7 +24,7 @@
         </style>
     </h:head>
 
-    <h:body>
+    <h:body style="background-image:url('imagens/bg_site.jpg'); background-repeat: repeat-x;">
         <f:view encoding="ISO-8859-1">
             <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
             <div id="div_geral">
@@ -50,8 +50,8 @@
                             <p:menuitem value="Sair" icon="ui-icon-close" />
                         </p:submenu>
 
-                        <p:menuitem value="Produtos" url="/login.xhtml" icon="ui-icon-tag"/>
-                        
+                        <p:menuitem value="Produtos" url="/produto.xhtml" icon="ui-icon-tag"/>
+
                         <p:submenu label="Cadastro" icon="ui-icon-person">
                             <p:menuitem value="Cliente" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
                             <p:menuitem value="Funcionário" update=":dialogCadFuncionario" oncomplete="PF('cadFuncionario').show();"/>
@@ -82,9 +82,10 @@
                 <span class="clearFull div20"></span>
 
                 <footer>
-                    <div id="footer_copyright">
-                        <span>© 2014 Bazar Web - Controle de Vendas e Estoque</span>
-                    </div>                    
+                    <center>
+                        <img alt="logops" id="logops" src="imagens/logo-ps.png"/>
+                        <img alt="logoti" id="logoti" src="imagens/logoti.png"/>                          
+                    </center>
                 </footer> 
             </div>
         </f:view>

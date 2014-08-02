@@ -49,30 +49,16 @@ html, body {
 
 #div_central {
     background-color:white;
-    width:100%;
-    max-width: 960px;
-    height: 460px;
+    width:960px;
+    min-height: 450px;
     margin:auto;
     border-radius:3px;
-    box-shadow: 0px 0px 7px #585858;
+    box-shadow: 0px 0px 1px #585858;
 }
 
 footer {
     width: 100%;
-    height:50px;
-    background-color: #3793bf;
     bottom: 0;
-    position: fixed;
-}
-
-#footer_copyright{
-    color:white;
-    width:100%;
-    max-width: 960px;
-    height:30px;
-    margin:auto;
-    text-align: center;
-    padding-top: 14px;
 }
 
 /*classe para auxiliar no cancelamento de float*/

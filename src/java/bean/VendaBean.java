@@ -1,6 +1,7 @@
 package bean;
 
 import JPA.ClienteJpaController;
+import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
 import JPA.VendaJpaController;
 import java.io.Serializable;
@@ -39,6 +40,8 @@ public class VendaBean implements Serializable {
     private ClienteJpaController clienteJpaController;
     @EJB
     private VendaJpaController vendaJpaController;
+    @EJB
+    private ItemJpaController itemJpaController;
     
     
 
@@ -169,6 +172,9 @@ public class VendaBean implements Serializable {
         venda.setEventoId(loginBean.getEventoSelecionado());
         
         try {
+            for(Item item : venda.getItemCollection()){
+                itemJpaController.create(item);
+            }
             vendaJpaController.create(venda);
             context.addMessage(null, new FacesMessage("Sucesso", "Venda concluida!"));
         } catch (Exception ex) {
