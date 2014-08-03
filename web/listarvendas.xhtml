@@ -1,0 +1,39 @@
+<ui:composition template="/WEB-INF/facelets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="conteudo">
+        <div id="area_venda">
+            <p:panel header="Vendas Realizadas">
+                <h:form>
+                    <p:dataTable var="venda" value="#{vendaBean.listaVendas}" rowKey="#{venda.id}" sortBy="#{venda.id}" selection="#{vendaBean.venda}" selectionMode="single" paginator="true" rows="10"  
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
+                        <p:column headerText="Código" sortBy="#{venda.id}">  
+                            <h:outputText value="#{venda.id}" />  
+                        </p:column> 
+                        <p:column headerText="Cliente">  
+                            <h:outputText value="#{venda.clienteId.nome}" />  
+                        </p:column> 
+                        <p:column headerText="Data">  
+                            <h:outputText value="#{venda.dataVenda}" />  
+                        </p:column> 
+                        <p:column headerText="Vendedor">  
+                            <h:outputText value="#{venda.funcionarioId.nome}" />  
+                        </p:column>
+                        <p:column headerText="Produtos"> 
+                            <ui:repeat var="item" value="#{venda.itemCollection}">
+                                <h:outputText value="#{item.quantidade} - #{item.produtoId.nome}" /><br />
+                            </ui:repeat>
+                        </p:column> 
+                        <p:column headerText="Total">  
+                            <h:outputText value="#{vendaBean.calculaValor(venda)}" />  
+                        </p:column> 
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+        </div>
+    </ui:define>
+</ui:composition>

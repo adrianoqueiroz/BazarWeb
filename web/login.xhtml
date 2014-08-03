@@ -33,7 +33,7 @@
 
                                 <h:panelGrid columns="2" styleClass="semBorda">
                                     <p:selectOneMenu style="width:210px;" id="evento" value="#{loginBean.idEventoSelecionado}">
-                                        <f:selectItem itemLabel="Selecione um Evento..."/>
+                                        <f:selectItem itemLabel="Selecione o evento..."/>
                                         <f:selectItems value="#{loginBean.selectItemEventos}" />
                                     </p:selectOneMenu>                      
                                     <p:commandButton id="botao_login" ajax="false" value="Login" action="#{loginBean.efetuaLogin()}"/>

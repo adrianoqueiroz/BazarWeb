@@ -26,6 +26,7 @@ import model.Venda;
 @ManagedBean
 @ViewScoped
 public class VendaBean implements Serializable {
+
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
 
@@ -34,6 +35,8 @@ public class VendaBean implements Serializable {
     private String cpfProcurado;
     private String nomeProcurado;
     private float valorCompra;
+    
+    private Collection<Venda> listaVendas;
     @EJB
     private ProdutoJpaController produtoJpaController;
     @EJB
@@ -42,8 +45,6 @@ public class VendaBean implements Serializable {
     private VendaJpaController vendaJpaController;
     @EJB
     private ItemJpaController itemJpaController;
-    
-    
 
     public Venda getVenda() {
         return venda;
@@ -76,6 +77,18 @@ public class VendaBean implements Serializable {
 
     public void setValorCompra(float valorCompra) {
         this.valorCompra = valorCompra;
+    }
+
+    public String getNomeProcurado() {
+        return nomeProcurado;
+    }
+
+    public void setNomeProcurado(String nomeProcurado) {
+        this.nomeProcurado = nomeProcurado;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 
     public void inserirProduto() {
@@ -170,9 +183,9 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-        
+
         try {
-            for(Item item : venda.getItemCollection()){
+            for (Item item : venda.getItemCollection()) {
                 itemJpaController.create(item);
             }
             vendaJpaController.create(venda);
@@ -182,16 +195,18 @@ public class VendaBean implements Serializable {
             Logger.getLogger(VendaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public String getNomeProcurado() {
-        return nomeProcurado;
+    
+    public Collection<Venda> getListaVendas(){
+        listaVendas = vendaJpaController.findVendaEntities();
+        return listaVendas;
+    }
+    
+    public double calculaValor(Venda venda){
+        double total = 0; 
+        for (Item item : venda.getItemCollection()){
+            total +=  item.getPrecoVenda();
+        }
+        return  total;
     }
 
-    public void setNomeProcurado(String nomeProcurado) {
-        this.nomeProcurado = nomeProcurado;
-    }
-
-    public void setLoginBean(LoginBean loginBean) {
-        this.loginBean = loginBean;
-    }
 }
