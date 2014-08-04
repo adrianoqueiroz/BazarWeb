@@ -7,10 +7,12 @@ package bean;
 
 import JPA.CategoriaJpaController;
 import JPA.EventoJpaController;
+import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -21,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import model.Categoria;
 import model.Evento;
+import model.Item;
 import model.Produto;
 
 /**
@@ -40,7 +43,8 @@ public class ProdutoBean {
     private ProdutoJpaController produtoJpaController;
     @EJB
     private CategoriaJpaController categoriaJpaController;
-    
+    @EJB
+    private ItemJpaController itemJpaController;    
     
 
     public ProdutoBean() {
@@ -86,13 +90,21 @@ public class ProdutoBean {
             context.addMessage(null, new FacesMessage("Falha!", "Falha"));
             Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public int getEstoque(Produto produto) {
-        //TODO: fazer a verificação em vendas.itemcollection de quantos produtos foram vendidos
-        estoque = produto.getQuantidade();
+        estoque = produto.getQuantidade() - getQtdVendidos(produto);
         return estoque;
+    }
+    public int getQtdVendidos(Produto produto){
+       Collection<Item> itens = itemJpaController.findItemEntities();
+       int totalVendidos = 0;
+       for (Item i : itens){
+           if(Objects.equals(i.getProdutoId().getId(), produto.getId())){
+               totalVendidos += i.getQuantidade();
+           }
+       }
+       return totalVendidos;
     }
 
     public void setEstoque(int estoque) {

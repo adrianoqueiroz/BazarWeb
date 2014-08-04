@@ -165,7 +165,7 @@ public class VendaBean implements Serializable {
         if (quantidade <= quantidadeMaxima) {
             item.setQuantidade(quantidade);
         } else {
-            context.addMessage(null, new FacesMessage("Falha", "A quantidade máxima atingida!"));
+            context.addMessage(null, new FacesMessage("Falha", "Quantidade máxima atingida!"));
         }
 
     }
@@ -189,7 +189,7 @@ public class VendaBean implements Serializable {
                 itemJpaController.create(item);
             }
             vendaJpaController.create(venda);
-            context.addMessage(null, new FacesMessage("Sucesso", "Venda concluida!"));
+            context.addMessage(null, new FacesMessage("Sucesso", "Venda realizada!"));
         } catch (Exception ex) {
             context.addMessage(null, new FacesMessage("Falha", "Erro ao persistir os dados!"));
             Logger.getLogger(VendaBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -201,10 +201,10 @@ public class VendaBean implements Serializable {
         return listaVendas;
     }
     
-    public double calculaValor(Venda venda){
+    public double calculaValorTotal(Venda venda){
         double total = 0; 
         for (Item item : venda.getItemCollection()){
-            total +=  item.getPrecoVenda();
+            total +=  item.getPrecoVenda()*item.getQuantidade();
         }
         return  total;
     }

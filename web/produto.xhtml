@@ -47,10 +47,10 @@
                                 <h:outputText value="R$ #{produto.preco}" />  
                             </p:column>
                             <p:column headerText="Quantidade">  
-                                <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
+                                <h:outputText value="#{produto.quantidade}" />  
                             </p:column> 
                             <p:column headerText="Vendidos">  
-                                <h:outputText value="0" />  
+                                <h:outputText value="#{produtoBean.getQtdVendidos(produto)}" />  
                             </p:column> 
                             <p:column headerText="Estoque">  
                                 <h:outputText value="#{produtoBean.getEstoque(produto)}" />  

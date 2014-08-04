@@ -25,11 +25,11 @@
                         </p:column>
                         <p:column headerText="Produtos"> 
                             <ui:repeat var="item" value="#{venda.itemCollection}">
-                                <h:outputText value="#{item.quantidade} - #{item.produtoId.nome}" /><br />
+                                <h:outputText value="(#{item.quantidade}x) #{item.produtoId.nome}" /><br />
                             </ui:repeat>
                         </p:column> 
                         <p:column headerText="Total">  
-                            <h:outputText value="#{vendaBean.calculaValor(venda)}" />  
+                            <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column> 
                     </p:dataTable>
                 </h:form>
