@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
@@ -220,7 +219,7 @@ public class ProdutoJpaController implements Serializable {
         }
     }
 
-        public Produto findByCodigo(Integer codigo) {
+    public Produto findByCodigo(Integer codigo) {
         EntityManager em = getEntityManager();
 
         try {
@@ -234,7 +233,7 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
-        
+
     public int getProdutoCount() {
         EntityManager em = getEntityManager();
         try {
@@ -247,5 +246,5 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

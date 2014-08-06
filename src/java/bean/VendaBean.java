@@ -35,7 +35,7 @@ public class VendaBean implements Serializable {
     private String cpfProcurado;
     private String nomeProcurado;
     private float valorCompra;
-    
+
     private Collection<Venda> listaVendas;
     @EJB
     private ProdutoJpaController produtoJpaController;
@@ -158,20 +158,27 @@ public class VendaBean implements Serializable {
     public void incrementaQuantidade(Item item) {
         FacesContext context = FacesContext.getCurrentInstance();
         int quantidadeMaxima = 6;
-        //TODO: verificar se tem no estoque
-        int quantidade = item.getQuantidade();
-        quantidade++;
+        int estoque;
 
-        if (quantidade <= quantidadeMaxima) {
-            item.setQuantidade(quantidade);
+        ProdutoBean produtoBean = new ProdutoBean();
+
+        estoque = produtoBean.getEstoque(item.getProdutoId());
+        if (estoque > 0) {
+            int quantidade = item.getQuantidade();
+            quantidade++;
+
+            if (quantidade <= quantidadeMaxima) {
+                item.setQuantidade(quantidade);
+            } else {
+                context.addMessage(null, new FacesMessage("Falha", "Quantidade máxima atingida!"));
+            }
         } else {
-            context.addMessage(null, new FacesMessage("Falha", "Quantidade máxima atingida!"));
+            context.addMessage(null, new FacesMessage("Falha", "Produto indisponível!"));
         }
 
     }
 
     public void decrementaQuantidade(Item item) {
-        //TODO: verificar se tem no estoque
         int quantidade = item.getQuantidade();
         quantidade--;
         if (quantidade > 0) {
@@ -195,18 +202,18 @@ public class VendaBean implements Serializable {
             Logger.getLogger(VendaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public Collection<Venda> getListaVendas(){
+
+    public Collection<Venda> getListaVendas() {
         listaVendas = vendaJpaController.findVendaEntities();
         return listaVendas;
     }
-    
-    public double calculaValorTotal(Venda venda){
-        double total = 0; 
-        for (Item item : venda.getItemCollection()){
-            total +=  item.getPrecoVenda()*item.getQuantidade();
+
+    public double calculaValorTotal(Venda venda) {
+        double total = 0;
+        for (Item item : venda.getItemCollection()) {
+            total += item.getPrecoVenda() * item.getQuantidade();
         }
-        return  total;
+        return total;
     }
 
 }

@@ -33,6 +33,7 @@ import model.Produto;
 @ManagedBean
 @RequestScoped
 public class ProdutoBean {
+
     private Produto produto;
     private Collection<Produto> produtoCollection;
     private int estoque;
@@ -44,8 +45,7 @@ public class ProdutoBean {
     @EJB
     private CategoriaJpaController categoriaJpaController;
     @EJB
-    private ItemJpaController itemJpaController;    
-    
+    private ItemJpaController itemJpaController;
 
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ProdutoBean {
     }
 
     public Collection<Produto> getProdutoCollection() {
-
+        //TODO: pegar o evento da sessao
         produtoCollection = produtoJpaController.findProdutoEntities();
         return produtoCollection;
     }
@@ -75,14 +75,14 @@ public class ProdutoBean {
         try {
             //TODO: pegar o evento da sessao
             Evento evento = eventoJpaController.findEvento(0);
-            
+
             Categoria categoria = categoriaJpaController.findCategoria(idCategoriaSelecionada);
-            
+
             produto.setEventoId(evento);
             produto.setCategoriaId(categoria);
-     
+
             produtoJpaController.create(produto);
-            
+
             produto = new Produto();
             context.addMessage(null, new FacesMessage("Produto cadastrado!", produto.getNome()));
 
@@ -96,15 +96,16 @@ public class ProdutoBean {
         estoque = produto.getQuantidade() - getQtdVendidos(produto);
         return estoque;
     }
-    public int getQtdVendidos(Produto produto){
-       Collection<Item> itens = itemJpaController.findItemEntities();
-       int totalVendidos = 0;
-       for (Item i : itens){
-           if(Objects.equals(i.getProdutoId().getId(), produto.getId())){
-               totalVendidos += i.getQuantidade();
-           }
-       }
-       return totalVendidos;
+
+    public int getQtdVendidos(Produto produto) {
+        Collection<Item> itens = itemJpaController.findItemEntities();
+        int totalVendidos = 0;
+        for (Item i : itens) {
+            if (Objects.equals(i.getProdutoId().getId(), produto.getId())) {
+                totalVendidos += i.getQuantidade();
+            }
+        }
+        return totalVendidos;
     }
 
     public void setEstoque(int estoque) {
@@ -119,7 +120,7 @@ public class ProdutoBean {
         this.idCategoriaSelecionada = idCategoriaSelecionada;
     }
 
-        public List<SelectItem> getSelectItemCategorias() {
+    public List<SelectItem> getSelectItemCategorias() {
 
         List<Categoria> listaCategorias = categoriaJpaController.findCategoriaEntities();
         List<SelectItem> itens = new ArrayList<>(listaCategorias.size());
