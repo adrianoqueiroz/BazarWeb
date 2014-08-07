@@ -158,11 +158,10 @@ public class VendaBean implements Serializable {
     public void incrementaQuantidade(Item item) {
         FacesContext context = FacesContext.getCurrentInstance();
         int quantidadeMaxima = 6;
-        int estoque;
+        int estoque = 1;
+        //TODO: Verificar Estoque
 
-        ProdutoBean produtoBean = new ProdutoBean();
-
-        estoque = produtoBean.getEstoque(item.getProdutoId());
+//        estoque = produtoBean.getEstoque(item.getProdutoId());
         if (estoque > 0) {
             int quantidade = item.getQuantidade();
             quantidade++;
