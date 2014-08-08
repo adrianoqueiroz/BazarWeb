@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:form>
+        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single" paginator="true" rows="10"  
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
+            <p:column headerText="Código" sortBy="#{produto.codigo}">  
+                <h:outputText value="#{produto.codigo}" />  
+            </p:column> 
+            <p:column headerText="Produto">  
+                <h:outputText value="#{produto.nome}" />  
+            </p:column> 
+            <p:column headerText="Categoria" sortBy="#{produto.categoriaId.nome}">  
+                <h:outputText value="#{produto.categoriaId.nome}" />  
+            </p:column> 
+            <p:column headerText="Preço">  
+                <h:outputText value="R$ #{produto.preco}" />  
+            </p:column>
+            <p:column headerText="Vendidos">  
+                <h:outputText value="#{produtoBean.getQtdVendidos(produto)}" />  
+            </p:column> 
+            <p:column headerText="Estoque">  
+                <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
+            </p:column> 
+        </p:dataTable>
+    </h:form>
+</html> 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <p:panel id="recibo">
+
+        <div>
+            <div>
+                <img alt="logops" id="logops" src="imagens/logo-ps.png"/> 
+                <div>
+                    <p:panelGrid>
+                        <h:outputText value="Razão: Parque Social"/>
+                        <h:outputText value="Telefone: (71) 2105-2600"/>
+                    </p:panelGrid>
+                </div>
+            </div>
+
+        </div>
+
+
+        <h:form>
+            <p:dataTable var="venda" value="#{vendaBean.listaVendas}"> 
+                <p:column headerText="Código" sortBy="#{venda.id}">  
+                    <h:outputText value="#{venda.id}" />  
+                </p:column> 
+                <p:column headerText="Cliente">  
+                    <h:outputText value="#{venda.clienteId.nome}" />  
+                </p:column> 
+                <p:column headerText="Data">  
+                    <h:outputText value="#{venda.dataVenda}" />  
+                </p:column> 
+                <p:column headerText="Vendedor">  
+                    <h:outputText value="#{venda.funcionarioId.nome}" />  
+                </p:column>
+                <p:column headerText="Produtos"> 
+                    <ui:repeat var="item" value="#{venda.itemCollection}">
+                        <h:outputText value="(#{item.quantidade}x) #{item.produtoId.nome}" /><br />
+                    </ui:repeat>
+                </p:column> 
+                <p:column headerText="Total">  
+                    <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
+                </p:column> 
+            </p:dataTable>
+        </h:form>
+
+        <h:form>
+            <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
+                <p:printer target=":recibo" /> 
+            </p:commandButton>
+        </h:form>
+    </p:panel>
+</html> 

@@ -6,6 +6,7 @@ import JPA.ProdutoJpaController;
 import JPA.VendaJpaController;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +90,10 @@ public class VendaBean implements Serializable {
 
     public void setLoginBean(LoginBean loginBean) {
         this.loginBean = loginBean;
+    }
+
+    public Date getNow() {
+        return new Date();
     }
 
     public void inserirProduto() {
@@ -191,11 +196,23 @@ public class VendaBean implements Serializable {
         venda.setEventoId(loginBean.getEventoSelecionado());
 
         try {
-            for (Item item : venda.getItemCollection()) {
-                itemJpaController.create(item);
+            //verificar se o carrinho não está vazio
+            if (venda.getItemCollection().size() > 0) {
+                if (venda.getFuncionarioId().getNome() != null) {
+                    venda.setDataVenda(new Date());
+                    for (Item item : venda.getItemCollection()) {
+                        itemJpaController.create(item);
+                    }
+                    vendaJpaController.create(venda);
+                    context.addMessage(null, new FacesMessage("Sucesso", "Venda realizada!"));
+                } else {
+                    context.addMessage(null, new FacesMessage("Falha", "Selecione o cliente!"));
+                }
+
+            } else {
+                context.addMessage(null, new FacesMessage("Falha", "Nenhum item no carrinho!"));
             }
-            vendaJpaController.create(venda);
-            context.addMessage(null, new FacesMessage("Sucesso", "Venda realizada!"));
+
         } catch (Exception ex) {
             context.addMessage(null, new FacesMessage("Falha", "Erro ao persistir os dados!"));
             Logger.getLogger(VendaBean.class.getName()).log(Level.SEVERE, null, ex);

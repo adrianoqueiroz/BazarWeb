@@ -47,8 +47,8 @@ public class Venda implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @Column(name = "data_venda")
-    @Temporal(TemporalType.DATE)
-    private Date dataVenda;
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date dataVenda;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vendaId")
     private Collection<Item> itemCollection;
     @JoinColumn(name = "evento_id", referencedColumnName = "id")

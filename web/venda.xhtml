@@ -11,11 +11,11 @@
                 <h:panelGrid>
                     <h:form>
                         <p:panel id="opnl" header="Inserir Produto">
-                            <h:outputLabel value="Código do Produto: " /> 
-                            <h:panelGrid id="codProduto" columns="3"> 
+                            <h:panelGrid id="codProduto" columns="4"> 
                                 <p:focus for="codigo"/>
-                                <p:inputText id="codigo" value="#{vendaBean.codigoProcurado}" required="true" requiredMessage="insira o código do produto!"/> 
-                                <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" value="Inserir" />
+                                <p:inputText placeholder="Digite o código" id="codigo" value="#{vendaBean.codigoProcurado}" required="true" requiredMessage="insira o código do produto!"/> 
+                                <p:commandButton ajax="false" action="#{vendaBean.inserirProduto()}" update="carrinhoCompras growl" icon="ui-icon-check"  />
+                                <p:commandButton update=":dialogListaProdutos" oncomplete="PF('listaProdutos').show();" icon="ui-icon-search"/>
                             </h:panelGrid>
                         </p:panel>
                     </h:form> 
@@ -23,8 +23,8 @@
                     <h:form>
                         <p:panel header="Cliente">
                             <h:panelGrid columns="3"> 
-                                <p:inputMask id="cliente" value="#{vendaBean.cpfProcurado}" mask="999.999.999-99" required="true" requiredMessage="Insira o CPF do cliente"/> 
-                                <p:commandButton ajax="false" actionListener="#{vendaBean.buscarCliente()}" update="carrinhoCompras growl" icon="ui-icon-search" />
+                                <p:inputMask placeholder="Digite o CPF" id="cliente" value="#{vendaBean.cpfProcurado}" mask="999.999.999-99" required="true" requiredMessage="Insira o CPF do cliente"/> 
+                                <p:commandButton ajax="false" actionListener="#{vendaBean.buscarCliente()}" update="carrinhoCompras growl" icon="ui-icon-check" />
                                 <p:commandButton update=":dialogCadCliente" oncomplete="PF('cadCliente').show();" icon="ui-icon-circle-plus"/>
                             </h:panelGrid>
                         </p:panel>
@@ -33,12 +33,16 @@
                     <h:form>
                         <p:panel header="Detalhes da Venda">
                             <h:panelGrid id="detalhesVenda" columns="1">
-                                <h:outputText value="Quantidade de Itens: #{vendaBean.venda.itemCollection.size()}" />
+                                <h:outputLabel value="Vendedor: #{loginBean.funcionarioLogado.nome}" />
+                                <h:outputText value="Data: #{vendaBean.now}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/> 
+                                </h:outputText> 
+                                <h:outputText value="Número de Itens: #{vendaBean.venda.itemCollection.size()}" />
                                 <h:outputLabel value="Cliente: #{vendaBean.venda.clienteId.nome}" />  
                                 <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" /> 
                                 <h:outputText value="Valor Total: R$#{vendaBean.valorCompra}" />
 
-                                <p:commandButton value="Finalizar Venda" action="#{vendaBean.finalizarVenda()}" update="detalhesVenda">
+                                <p:commandButton value="Finalizar Venda" action="#{vendaBean.finalizarVenda()}" update="detalhesVenda :growl :dialogRecibo" oncomplete="PF('recibo').show();">
                                     <p:confirm header="Confirmação" message="Valor recebido: R$#{vendaBean.valorCompra}. Você confirma?" icon="ui-icon-alert" />
                                 </p:commandButton> 
 
@@ -85,9 +89,6 @@
                                     <p:commandButton ajax="false" update="area_venda:detalhesVenda div_central:tabelaCarrinho" actionListener="#{vendaBean.removeItem(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-trash" title="View" />  
                                 </p:column>
                                 <f:facet name="footer">
-                                    <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
-                                        <p:printer target="tabelaCarrinho" /> 
-                                    </p:commandButton> 
                                     Total de Itens #{vendaBean.venda.itemCollection.size()}
                                 </f:facet>
                             </p:dataTable>
