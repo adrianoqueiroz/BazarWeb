@@ -61,7 +61,7 @@
                         <h:form id="carrinhoCompras">
                             <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" 
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         emptyMessage="Nenhum produto no carrinho" style="width: 650px; height: 350px">  
+                                         emptyMessage="Nenhum produto no carrinho" style="width: 650px;">  
 
                                 <p:column headerText="Código" style="text-align: center;">  
                                     <h:outputText value="#{itemVenda.produtoId.codigo}" />  

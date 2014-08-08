@@ -11,26 +11,26 @@
                 <h:form>
                     <p:dataTable var="venda" value="#{vendaBean.listaVendas}" rowKey="#{venda.id}" sortBy="#{venda.id}" selection="#{vendaBean.venda}" selectionMode="single" paginator="true" rows="10"  
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
-                        <p:column headerText="Código" sortBy="#{venda.id}">  
+                        <p:column headerText="Código" sortBy="#{venda.id}" style="text-align: center;">  
                             <h:outputText value="#{venda.id}" />  
                         </p:column> 
                         <p:column headerText="Cliente">  
                             <h:outputText value="#{venda.clienteId.nome}" />  
                         </p:column> 
-                        <p:column headerText="Data">  
+                        <p:column headerText="Data" style="text-align: center;">  
                             <h:outputText value="#{venda.dataVenda}" >
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
                             </h:outputText>  
                         </p:column> 
-                        <p:column headerText="Vendedor">  
+                        <p:column headerText="Vendedor" style="text-align: center;">  
                             <h:outputText value="#{venda.funcionarioId.nome}" />  
                         </p:column>
-                        <p:column headerText="Produtos"> 
+                        <p:column headerText="Produtos" style="text-align: center;"> 
                             <ui:repeat var="item" value="#{venda.itemCollection}">
                                 <h:outputText value="(#{item.quantidade}x) #{item.produtoId.nome}" /><br />
                             </ui:repeat>
                         </p:column> 
-                        <p:column headerText="Total">  
+                        <p:column headerText="Total" style="text-align: center;">  
                             <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column> 
                     </p:dataTable>

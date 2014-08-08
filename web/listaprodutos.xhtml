@@ -9,22 +9,22 @@
     <h:form>
         <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single" paginator="true" rows="10"  
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
-            <p:column headerText="Código" sortBy="#{produto.codigo}">  
+            <p:column headerText="Código" sortBy="#{produto.codigo}" style="text-align: center;">  
                 <h:outputText value="#{produto.codigo}" />  
             </p:column> 
-            <p:column headerText="Produto">  
+            <p:column headerText="Produto" style="text-align: center;">  
                 <h:outputText value="#{produto.nome}" />  
             </p:column> 
-            <p:column headerText="Categoria" sortBy="#{produto.categoriaId.nome}">  
+            <p:column headerText="Categoria" sortBy="#{produto.categoriaId.nome}" style="text-align: center;">  
                 <h:outputText value="#{produto.categoriaId.nome}" />  
             </p:column> 
-            <p:column headerText="Preço">  
+            <p:column headerText="Preço" style="text-align: center;">  
                 <h:outputText value="R$ #{produto.preco}" />  
             </p:column>
-            <p:column headerText="Vendidos">  
+            <p:column headerText="Vendidos" style="text-align: center;">  
                 <h:outputText value="#{produtoBean.getQtdVendidos(produto)}" />  
             </p:column> 
-            <p:column headerText="Estoque">  
+            <p:column headerText="Estoque" style="text-align: center;">  
                 <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
             </p:column> 
         </p:dataTable>

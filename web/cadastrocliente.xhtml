@@ -15,7 +15,7 @@
             <h:outputLabel value="Email: " />  
             <p:inputText style="width:350px;" value="#{clienteBean.novoCliente.email}"/>
             <h:outputLabel value="Telefone: " />  
-            <p:inputText style="width:350px;"  value="#{clienteBean.novoCliente.telefone}"/>
+            <p:inputMask style="width:350px;"  value="#{clienteBean.novoCliente.telefone}" mask="(99) 9999-9999?9"/>
             <h:outputLabel value="Data de Nascimento: " />  
             <p:calendar style="width:350px;"  value="#{clienteBean.novoCliente.dataNascimento}" pattern="dd/MM/yyyy" locale="pt" navigator="true" effect="explode"/>
 

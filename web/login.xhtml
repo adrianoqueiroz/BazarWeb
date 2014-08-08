@@ -32,11 +32,11 @@
                                 <p:watermark for="senha" value="Senha" /> 
 
                                 <h:panelGrid columns="2" styleClass="semBorda">
-                                    <p:selectOneMenu style="width:210px;" id="evento" value="#{loginBean.idEventoSelecionado}">
+                                    <p:selectOneMenu style="width:210px;" id="evento" value="#{loginBean.idEventoSelecionado}" required="true" requiredMessage="Selecione um evento">
                                         <f:selectItem itemLabel="Selecione o evento..."/>
                                         <f:selectItems value="#{loginBean.selectItemEventos}" />
                                     </p:selectOneMenu>                      
-                                    <p:commandButton id="botao_login" ajax="false" value="Login" action="#{loginBean.efetuaLogin()}"/>
+                                    <p:commandButton id="botao_login" ajax="false" value="Login" action="#{loginBean.efetuaLogin()}" update="growl"/>
                                 </h:panelGrid>
 
                             </h:panelGrid>

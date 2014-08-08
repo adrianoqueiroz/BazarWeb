@@ -30,7 +30,7 @@ public class VendaBean implements Serializable {
 
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
-
+    
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
@@ -103,7 +103,7 @@ public class VendaBean implements Serializable {
         for (Item i : venda.getItemCollection()) {
             if (Objects.equals(i.getProdutoId().getCodigo(), codigoProcurado)) {
                 inserir = false;
-                context.addMessage(null, new FacesMessage("Falha", "O produto já está na lista!"));
+                context.addMessage(null, new FacesMessage("Falha", "O produto já está no carrinho de compras!"));
                 break;
             }
         }
@@ -116,7 +116,7 @@ public class VendaBean implements Serializable {
                 item.setQuantidade(1);
                 venda.getItemCollection().add(item);
                 calculaValorCompra();
-                context.addMessage(null, new FacesMessage(item.getProdutoId().getNome(), "Produto adicionado na lista."));
+                context.addMessage(null, new FacesMessage(item.getProdutoId().getNome(), "Produto adicionado ao carrinho de compras."));
             } catch (Exception e) {
                 context.addMessage(null, new FacesMessage("Falha", "Produto não encontrado!"));
             }
@@ -128,7 +128,7 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         String nomeProduto = item.getProdutoId().getNome();
         venda.getItemCollection().remove(item);
-        context.addMessage(null, new FacesMessage(nomeProduto, "Produto removido do carrinho!"));
+        context.addMessage(null, new FacesMessage(nomeProduto, "Produto removido do carrinho de compras!"));
     }
 
     public void buscarCliente() {
@@ -194,7 +194,7 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-
+        
         try {
             //verificar se o carrinho não está vazio
             if (venda.getItemCollection().size() > 0) {

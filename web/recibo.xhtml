@@ -23,27 +23,28 @@
 
 
         <h:form>
-            <p:dataTable var="venda" value="#{vendaBean.listaVendas}"> 
-                <p:column headerText="Código" sortBy="#{venda.id}">  
-                    <h:outputText value="#{venda.id}" />  
-                </p:column> 
-                <p:column headerText="Cliente">  
-                    <h:outputText value="#{venda.clienteId.nome}" />  
-                </p:column> 
-                <p:column headerText="Data">  
-                    <h:outputText value="#{venda.dataVenda}" />  
-                </p:column> 
-                <p:column headerText="Vendedor">  
-                    <h:outputText value="#{venda.funcionarioId.nome}" />  
+            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
+                <p:column headerText="Código" style="text-align: center;">  
+                    <h:outputText value="#{itemVenda.produtoId.codigo}" />  
+                </p:column>  
+                <p:column headerText="Produto" style="text-align: center;">  
+                    <h:outputText value="#{itemVenda.produtoId.nome}" />  
+                </p:column>  
+                <p:column headerText="Categoria" style="text-align: center;">  
+                    <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
+                </p:column>  
+                <p:column headerText="Preço" style="text-align: center;">  
+                    <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
+                </p:column>  
+                <p:column headerText="Qtd." style="text-align: center;">
+                    <h:outputText value="#{itemVenda.quantidade}" />
                 </p:column>
-                <p:column headerText="Produtos"> 
-                    <ui:repeat var="item" value="#{venda.itemCollection}">
-                        <h:outputText value="(#{item.quantidade}x) #{item.produtoId.nome}" /><br />
-                    </ui:repeat>
+                <p:column headerText="Total" style="text-align: center;">  
+                    <h:outputText value="R$#{itemVenda.total}" />  
                 </p:column> 
-                <p:column headerText="Total">  
-                    <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
-                </p:column> 
+                <f:facet name="footer">
+                    Valor à pagar: #{vendaBean.calculaValorCompra()}
+                </f:facet>
             </p:dataTable>
         </h:form>
 
