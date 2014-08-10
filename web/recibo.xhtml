@@ -7,20 +7,15 @@
       xmlns:p="http://primefaces.org/ui">
 
     <p:panel id="recibo">
-
         <div>
+            <img alt="logops" id="logops" src="imagens/logo-ps.png"/> 
             <div>
-                <img alt="logops" id="logops" src="imagens/logo-ps.png"/> 
-                <div>
-                    <p:panelGrid>
-                        <h:outputText value="Razão: Parque Social"/>
-                        <h:outputText value="Telefone: (71) 2105-2600"/>
-                    </p:panelGrid>
-                </div>
+                <p:panelGrid>
+                    <h:outputText value="Razão: Parque Social"/>
+                    <h:outputText value="Telefone: (71) 2105-2600"/>
+                </p:panelGrid>
             </div>
-
         </div>
-
 
         <h:form>
             <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
@@ -46,12 +41,10 @@
                     Valor à pagar: #{vendaBean.calculaValorCompra()}
                 </f:facet>
             </p:dataTable>
-        </h:form>
-
-        <h:form>
+            
             <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
                 <p:printer target=":recibo" /> 
-            </p:commandButton>
+            </p:commandButton>       
         </h:form>
     </p:panel>
 </html> 

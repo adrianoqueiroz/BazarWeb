@@ -32,16 +32,27 @@
 
                     <h:form>
                         <p:panel header="Detalhes da Venda">
-                            <h:panelGrid id="detalhesVenda" columns="1">
-                                <h:outputLabel value="Vendedor: #{loginBean.funcionarioLogado.nome}" />
-                                <h:outputText value="Data: #{vendaBean.now}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/> 
-                                </h:outputText> 
-                                <h:outputText value="Número de Itens: #{vendaBean.venda.itemCollection.size()}" />
-                                <h:outputLabel value="Cliente: #{vendaBean.venda.clienteId.nome}" />  
-                                <h:outputLabel value="CPF: #{vendaBean.venda.clienteId.cpf}" /> 
-                                <h:outputText value="Valor Total: R$#{vendaBean.valorCompra}" />
+                            <h:panelGrid id="detalhesVenda" columns="2">
+                                <h:outputLabel value="Vendedor: "/>
+                                <h:outputText value="#{loginBean.funcionarioLogado.nome}" />
+                                <h:outputLabel for="data_atual" value="Data:"/>
+                                <h:outputText id="data_atual" value="#{vendaBean.now}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/> 
+                                </h:outputText>
+                                <h:outputLabel value="Hora: "/>
+                                <h:outputText id="hora_atual" value="#{vendaBean.now}">
+                                    <f:convertDateTime pattern="HH:mm:ss"/> 
+                                </h:outputText>
+                                <h:outputLabel value="Itens:"/>
+                                <h:outputText value="#{vendaBean.venda.itemCollection.size()}" />
+                                <h:outputLabel value="Cliente:"/>
+                                <h:outputText value="#{vendaBean.venda.clienteId.nome}" />
+                                <h:outputLabel value="CPF:"/>
+                                <h:outputLabel value="#{vendaBean.venda.clienteId.cpf}" />
+                                <h:outputLabel value="Total:"/>
+                                <h:outputText value="R$#{vendaBean.valorCompra}" />
 
+                                <h:outputLabel/>
                                 <p:commandButton value="Finalizar Venda" action="#{vendaBean.finalizarVenda()}" update="detalhesVenda :growl :dialogRecibo" oncomplete="PF('recibo').show();">
                                     <p:confirm header="Confirmação" message="Valor recebido: R$#{vendaBean.valorCompra}. Você confirma?" icon="ui-icon-alert" />
                                 </p:commandButton> 
@@ -51,37 +62,35 @@
                                     <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
                                 </p:confirmDialog>  
                             </h:panelGrid>
+                            <p:poll interval="1" update="hora_atual" />
                         </p:panel>
                     </h:form>
 
                 </h:panelGrid>
 
                 <h:panelGrid>
-                    <p:panel header="Carrinho de Compras" >
+                    <p:panel header="Carrinho de Compras" style="min-height: 380px;" >
                         <h:form id="carrinhoCompras">
-                            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="10" 
+                            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}"  paginator="true" rows="6" 
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          emptyMessage="Nenhum produto no carrinho" style="width: 650px;">  
 
-                                <p:column headerText="Código" style="text-align: center;">  
+                                <p:column headerText="Cód." style="text-align: center;" width="5%">  
                                     <h:outputText value="#{itemVenda.produtoId.codigo}" />  
                                 </p:column>  
-                                <p:column headerText="Produto" style="text-align: center;">  
+                                <p:column headerText="Produto" style="text-align: center;" width="40%">  
                                     <h:outputText value="#{itemVenda.produtoId.nome}" />  
                                 </p:column>  
-                                <p:column headerText="Categoria" style="text-align: center;">  
-                                    <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
-                                </p:column>  
-                                <p:column headerText="Preço" style="text-align: center;">  
+                                <p:column headerText="Preço" style="text-align: center;" width="15%">  
                                     <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
                                 </p:column>  
-                                <p:column headerText="Quantidade" style="text-align: center;">
+                                <p:column headerText="Qtd" style="text-align: center;" width="5%">
                                     <h:outputText value="#{itemVenda.quantidade}" />
                                 </p:column>
-                                <p:column headerText="Total" style="text-align: center;">  
-                                    <h:outputText value="R$#{itemVenda.total}" />  
+                                <p:column headerText="Total" style="text-align: center;" width="15%">  
+                                    <h:outputText value="R$ #{itemVenda.total}" />  
                                 </p:column> 
-                                <p:column style="text-align: center;"> 
+                                <p:column style="text-align: center;" width="20%"> 
                                     <p:commandButton ajax="false" update="area_venda:detalhesVenda" actionListener="#{vendaBean.decrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-minus" title="View"/> 
                                     <p:spacer width="2px"/>
                                     <p:commandButton ajax="false" update="area_venda:detalhesVenda" actionListener="#{vendaBean.incrementaQuantidade(itemVenda)}" process="tabelaCarrinho" icon="ui-icon-plus" title="View"/>  

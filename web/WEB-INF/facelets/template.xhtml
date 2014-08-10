@@ -42,6 +42,7 @@
                 <span class="clearFull div20"> <!-- --> </span>   
 
                 <h:form>
+                    <p:menuitem value="Início" url="/index.xhtml" icon="ui-icon-home"/>
                     <p:menubar styleClass="menuBar">
                         <p:submenu label="Venda" icon="ui-icon-cart">
                             <p:menuitem value="Nova" url="/venda.xhtml" icon="ui-icon-cart" />
@@ -73,9 +74,11 @@
 
                 <div id="div_central">
                     <!--conteudo do template-->
-                    <ui:insert name="conteudo">
-
-                    </ui:insert>
+                    <span class="clearFull div20"></span>
+                    <div id="div_conteudo">
+                        <ui:insert name="conteudo"/> 
+                    </div>
+                    <span class="clearFull div20"></span>
                 </div>
 
                 <!--Dialogs-->
