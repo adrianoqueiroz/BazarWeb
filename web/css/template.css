@@ -47,6 +47,14 @@ html, body {
     padding-top: 16px;
 }
 
+#evento_atual {
+    float: right;
+    margin-right: 15px;
+    font:normal 16px sans-serif;
+    color: #fdfdfd;
+    padding-top: 16px;
+}
+
 #div_central {
     background-color:white;
     width:1000px;

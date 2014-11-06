@@ -41,7 +41,7 @@
                                 </h:outputText>
                                 <h:outputLabel value="Hora: "/>
                                 <h:outputText id="hora_atual" value="#{vendaBean.now}">
-                                    <f:convertDateTime pattern="HH:mm:ss"/> 
+                                    <f:convertDateTime pattern="HH:mm"/> 
                                 </h:outputText>
                                 <h:outputLabel value="Itens:"/>
                                 <h:outputText value="#{vendaBean.venda.itemCollection.size()}" />
@@ -62,7 +62,7 @@
                                     <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
                                 </p:confirmDialog>  
                             </h:panelGrid>
-                            <p:poll interval="1" update="hora_atual" />
+                            <!--<p:poll interval="1" update="hora_atual" />-->
                         </p:panel>
                     </h:form>
 
