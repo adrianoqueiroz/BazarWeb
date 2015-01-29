@@ -31,9 +31,14 @@
                 </p:panel>
 
                 <p:panel header="Produtos Cadastrados">
-                    <h:form>
-                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" selection="#{produtoBean.produto}" selectionMode="single" paginator="true" rows="10"  
+                    <h:form id="formProdutos">
+                        <p:growl id="msgs" showDetail="true"/>
+                        <p:dataTable var="produto" value="#{produtoBean.produtoCollection}" rowKey="#{produto.id}" sortBy="#{produto.nome}" editable="true" paginator="true" rows="10"  
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
+
+                            <p:ajax event="rowEdit" listener="#{produtoBean.onRowEdit}" update=":formProdutos:msgs" />
+                            <p:ajax event="rowEditCancel" listener="#{produtoBean.onRowCancel}" update=":formProdutos:msgs" />
+
                             <p:column headerText="Código" sortBy="#{produto.codigo}">  
                                 <h:outputText value="#{produto.codigo}" />  
                             </p:column> 
@@ -44,14 +49,27 @@
                                 <h:outputText value="#{produto.categoriaId.nome}" />  
                             </p:column> 
                             <p:column headerText="Preço">  
-                                <h:outputText value="R$ #{produto.preco}" />  
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{produto.preco}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="precoInput" value="#{produtoBean.editPreco}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Vendidos">  
-                                <h:outputText value="#{produtoBean.getQtdVendidos(produto)}" />  
+                            <p:column headerText="Qtd.">  
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{produto.quantidade}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="quantidadeInput" value="#{produtoBean.editQuantidade}" style="width:100%"/></f:facet>
+                                </p:cellEditor>                                
                             </p:column> 
                             <p:column headerText="Estoque">  
                                 <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
-                            </p:column> 
+                            </p:column>
+                            <p:column>
+                                <p:rowEditor />
+                            </p:column>
                         </p:dataTable>
                     </h:form>
                 </p:panel>

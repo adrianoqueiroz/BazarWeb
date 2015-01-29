@@ -25,15 +25,17 @@
                         <p:column headerText="Vendedor" style="text-align: center;">  
                             <h:outputText value="#{venda.funcionarioId.nome}" />  
                         </p:column>
+                        <!--
                         <p:column headerText="Produtos" style="text-align: center;"> 
                             <ui:repeat var="item" value="#{venda.itemCollection}">
                                 <h:outputText value="(#{item.quantidade}x) #{item.produtoId.nome}" /><br />
                             </ui:repeat>
                         </p:column> 
+                        -->
                         <p:column headerText="Total" style="text-align: center;">  
                             <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column>
-                        <p:column headerText="Recibo">
+                        <p:column headerText="Recibo" style="text-align: center;">
                             <p:commandButton action="#{reciboBean.selecionaRecibo(venda)}" icon="ui-icon-search" title="Recibo"/> 
                         </p:column>
                     </p:dataTable>

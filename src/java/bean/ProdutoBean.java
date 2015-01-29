@@ -17,6 +17,8 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -50,6 +52,9 @@ public class ProdutoBean implements Serializable {
     @EJB
     private ItemJpaController itemJpaController;
 
+    private int editQuantidade;
+    private float editPreco;
+
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
         this.produto = new Produto();
@@ -72,6 +77,22 @@ public class ProdutoBean implements Serializable {
         this.produto = produto;
     }
 
+    public int getEditQuantidade() {
+        return editQuantidade;
+    }
+
+    public void setEditQuantidade(int editQuantidade) {
+        this.editQuantidade = editQuantidade;
+    }
+
+    public float getEditPreco() {
+        return editPreco;
+    }
+
+    public void setEditPreco(float editPreco) {
+        this.editPreco = editPreco;
+    }
+
     public void create() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
@@ -90,6 +111,18 @@ public class ProdutoBean implements Serializable {
             context.addMessage(null, new FacesMessage("Falha!", "Falha"));
             Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void edit(Produto produto) {
+        try {
+            produto.setPreco(editPreco);
+            produto.setQuantidade(editQuantidade);
+
+            produtoJpaController.edit(produto);
+        } catch (Exception ex) {
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public int getEstoque(Produto produto) {
@@ -137,4 +170,19 @@ public class ProdutoBean implements Serializable {
         evento = eventoJpaController.findEvento(1);
         return evento;
     }
+
+    public void onRowEdit(RowEditEvent event) {
+        Produto produtoEditado = (Produto) event.getObject();
+
+        edit(produtoEditado);
+
+        FacesMessage msg = new FacesMessage("Produto Editado", ((Produto) event.getObject()).getNome());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Edição cancelada", ((Produto) event.getObject()).getNome());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
 }
