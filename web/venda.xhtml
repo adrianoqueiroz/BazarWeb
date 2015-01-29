@@ -54,7 +54,7 @@
 
                                 <h:outputLabel/>
 
-                                <p:commandButton value="Recibo" action="/index.xhtml" actionListener="#{vendaBean.finalizarVenda()}">
+                                <p:commandButton value="Finalizar" action="#{reciboBean.selecionaRecibo(vendaBean.venda)}" actionListener="#{vendaBean.finalizarVenda()}">
                                     <p:confirm header="Confirmação" message="Valor recebido: R$#{vendaBean.valorCompra}. Você confirma?" icon="ui-icon-alert" />
                                 </p:commandButton>
 

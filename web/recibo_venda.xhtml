@@ -42,7 +42,7 @@
                     </h:panelGrid>
                 </p:panel>
 
-                <p:panel id="dados_compra" header="Dados da Compra" style="margin-bottom:20px">
+                <p:panel id="dados_compra" header="Dados da Compra - Nº#{reciboBean.venda.id}" style="margin-bottom:20px">
                     <h:form>
                         <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{reciboBean.venda.itemCollection}">  
                             <p:column headerText="Código" style="text-align: center;">  
