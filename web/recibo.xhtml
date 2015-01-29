@@ -7,44 +7,5 @@
       xmlns:p="http://primefaces.org/ui">
 
     <p:panel id="recibo">
-        <div>
-            <img alt="logops" id="logops" src="imagens/logo-ps.png"/> 
-            <div>
-                <p:panelGrid>
-                    <h:outputText value="Razão: Parque Social"/>
-                    <h:outputText value="Telefone: (71) 2105-2600"/>
-                </p:panelGrid>
-            </div>
-        </div>
-
-        <h:form>
-            <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{vendaBean.venda.itemCollection}">  
-                <p:column headerText="Código" style="text-align: center;">  
-                    <h:outputText value="#{itemVenda.produtoId.codigo}" />  
-                </p:column>  
-                <p:column headerText="Produto" style="text-align: center;">  
-                    <h:outputText value="#{itemVenda.produtoId.nome}" />  
-                </p:column>  
-                <p:column headerText="Categoria" style="text-align: center;">  
-                    <h:outputText value="#{itemVenda.produtoId.categoriaId.nome}" />  
-                </p:column>  
-                <p:column headerText="Preço" style="text-align: center;">  
-                    <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
-                </p:column>  
-                <p:column headerText="Qtd." style="text-align: center;">
-                    <h:outputText value="#{itemVenda.quantidade}" />
-                </p:column>
-                <p:column headerText="Total" style="text-align: center;">  
-                    <h:outputText value="R$#{itemVenda.total}" />  
-                </p:column> 
-                <f:facet name="footer">
-                    Valor à pagar: #{vendaBean.calculaValorCompra()}
-                </f:facet>
-            </p:dataTable>
-            
-            <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
-                <p:printer target=":recibo" /> 
-            </p:commandButton>       
-        </h:form>
     </p:panel>
 </html> 

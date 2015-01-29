@@ -20,14 +20,9 @@ import model.Venda;
 @ManagedBean
 @RequestScoped
 public class ReciboBean implements Serializable {
-    private Integer codigoProcurado = 503;
-    @EJB
-    private VendaJpaController vendaJpaController;
-    
     private Venda venda;
     
     public Venda getVenda() {
-        venda = vendaJpaController.findVenda(codigoProcurado);
         return venda;
     }
 
@@ -43,4 +38,8 @@ public class ReciboBean implements Serializable {
         return valor;
     }    
 
+    public String selecionaRecibo(Venda venda){
+        this.venda = venda;
+        return "/recibo_venda.xhtml";
+    }
 }

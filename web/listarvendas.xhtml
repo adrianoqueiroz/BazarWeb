@@ -34,7 +34,7 @@
                             <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column>
                         <p:column headerText="Recibo">
-                            <p:commandButton action="/recibo_venda.xhtml" icon="ui-icon-search" title="Recibo"/> 
+                            <p:commandButton action="#{reciboBean.selecionaRecibo(venda)}" icon="ui-icon-search" title="Recibo"/> 
                         </p:column>
                     </p:dataTable>
                 </h:form>
