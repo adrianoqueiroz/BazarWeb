@@ -111,7 +111,7 @@ public class VendaBean implements Serializable {
         if (inserir) {
             try {
                 Item item = new Item();
-                item.setProdutoId(produtoJpaController.findByCodigo(codigoProcurado));
+                item.setProdutoId(produtoJpaController.findByCodigoAndEvento(codigoProcurado, loginBean.getEventoSelecionado()));
                 item.setPrecoVenda(item.getProdutoId().getPreco());
                 item.setQuantidade(1);
                 venda.getItemCollection().add(item);

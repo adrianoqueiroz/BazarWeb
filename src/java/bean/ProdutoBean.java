@@ -9,6 +9,7 @@ import JPA.CategoriaJpaController;
 import JPA.EventoJpaController;
 import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -32,10 +34,11 @@ import model.Produto;
  */
 @ManagedBean
 @RequestScoped
-public class ProdutoBean {
+public class ProdutoBean implements Serializable {
 
     private Produto produto;
     private Collection<Produto> produtoCollection;
+    private Evento evento;
     private int estoque;
     private int idCategoriaSelecionada;
     @EJB
@@ -53,8 +56,7 @@ public class ProdutoBean {
     }
 
     public Collection<Produto> getProdutoCollection() {
-        //TODO: pegar o evento da sessao
-        produtoCollection = produtoJpaController.findProdutoEntities();
+        produtoCollection = produtoJpaController.findProdutoEntitiesByEvento(this.getEvento());
         return produtoCollection;
     }
 
@@ -69,16 +71,16 @@ public class ProdutoBean {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+    
+    
 
     public void create() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
-            //TODO: pegar o evento da sessao
-            Evento evento = eventoJpaController.findEvento(0);
+
+            produto.setEventoId(this.getEvento());
 
             Categoria categoria = categoriaJpaController.findCategoria(idCategoriaSelecionada);
-
-            produto.setEventoId(evento);
             produto.setCategoriaId(categoria);
 
             produtoJpaController.create(produto);
@@ -130,5 +132,11 @@ public class ProdutoBean {
 
         }
         return itens;
+    }
+
+    public Evento getEvento() {
+        //TODO: pegar o evento atual da sessão
+        evento = eventoJpaController.findEvento(1);
+        return evento;
     }
 }

@@ -32,7 +32,10 @@
                         </p:column> 
                         <p:column headerText="Total" style="text-align: center;">  
                             <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
-                        </p:column> 
+                        </p:column>
+                        <p:column headerText="Recibo">
+                            <p:commandButton action="/recibo_venda.xhtml" icon="ui-icon-search" title="Recibo"/> 
+                        </p:column>
                     </p:dataTable>
                 </h:form>
             </p:panel>

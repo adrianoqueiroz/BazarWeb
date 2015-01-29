@@ -1,0 +1,85 @@
+<ui:composition template="/WEB-INF/facelets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="cabecalho">
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <div id="area_venda">
+            <p:panel id="recibo_compra">
+                <h:panelGrid>
+                    <div>
+                        <img alt="logops" id="logops" src="imagens/logo-ps.png" width="157px" height="50px"/> 
+                    </div>
+                </h:panelGrid>
+
+                <p:panel id="dados_entidade" header="Dados da Entidade" style="margin-bottom:20px">
+                    <h:panelGrid columns="1">
+                        <h:outputText value="Parque Social - Empreendedorismo e Desenvolvimento Social"/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Endereço: Av. ACM, Parque da Cidade, nº 1213"/>
+                            <h:outputText value=""/>
+                            <h:outputText value="Bairro: Itaigara"/>
+                            <h:outputText value="Cidade: Salvador"/>
+                            <h:outputText value="Tel: (71) 2105-2600"/>
+                            <h:outputText value="Estado: Bahia"/>
+                            <h:outputText value="CEP: 41.825-906"/>
+                            <h:outputText value="CNPJ: 13.962.154/0001-06"/>
+                        </h:panelGrid> 
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:panel id="dados_cliente" header="Dados do Cliente" style="margin-bottom:20px">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Nome: #{reciboBean.venda.clienteId.nome}"/>
+                        <h:outputText value="CPF: #{reciboBean.venda.clienteId.cpf}"/>
+                        <h:outputText value="E-mail: #{reciboBean.venda.clienteId.email}"/>
+                        <h:outputText value="Telefone: #{reciboBean.venda.clienteId.telefone}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:panel id="dados_compra" header="Dados da Compra" style="margin-bottom:20px">
+                    <h:form>
+                        <p:dataTable id="tabelaCarrinho" var="itemVenda" value="#{reciboBean.venda.itemCollection}">  
+                            <p:column headerText="Código" style="text-align: center;">  
+                                <h:outputText value="#{itemVenda.produtoId.codigo}" />  
+                            </p:column>  
+                            <p:column headerText="Produto" style="text-align: center;">  
+                                <h:outputText value="#{itemVenda.produtoId.nome}" />  
+                            </p:column>  
+                            <p:column headerText="Preço" style="text-align: center;">  
+                                <h:outputText value="R$#{itemVenda.produtoId.preco}" />  
+                            </p:column>  
+                            <p:column headerText="Qtd." style="text-align: center;">
+                                <h:outputText value="#{itemVenda.quantidade}" />
+                            </p:column>
+                            <p:column headerText="Total" style="text-align: center;">  
+                                <h:outputText value="R$#{itemVenda.total}" />  
+                            </p:column> 
+                            <f:facet name="footer">
+                                Total Geral: R$#{reciboBean.calculaValorCompra()}
+                            </f:facet>
+                        </p:dataTable>
+                    </h:form>
+                    <h:outputText id="data_compra" value="Data da compra: #{reciboBean.venda.dataVenda}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/> 
+                    </h:outputText>
+                </p:panel>
+
+
+
+            </p:panel>
+
+            <h:form>
+                <p:commandButton value="Imprimir" type="button" icon="ui-icon-print">  
+                    <p:printer target=":recibo_compra" /> 
+                </p:commandButton>  
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

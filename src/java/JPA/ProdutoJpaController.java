@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import model.Categoria;
+import model.Evento;
 import model.Item;
 import model.Produto;
 
@@ -210,6 +211,21 @@ public class ProdutoJpaController implements Serializable {
         }
     }
 
+    public List<Produto> findProdutoEntitiesByEvento(Evento evento) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Produto.findByEvento");
+            query.setParameter("eventoId", evento);
+            return (List<Produto>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public Produto findProduto(Integer id) {
         EntityManager em = getEntityManager();
         try {
@@ -234,6 +250,22 @@ public class ProdutoJpaController implements Serializable {
         }
     }
 
+    public Produto findByCodigoAndEvento(Integer codigo, Evento evento) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Produto.findByCodigoAndEvento");
+            query.setParameter("codigo", codigo);
+            query.setParameter("eventoId", evento);
+            return (Produto) query.getSingleResult();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+    
     public int getProdutoCount() {
         EntityManager em = getEntityManager();
         try {

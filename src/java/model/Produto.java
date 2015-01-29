@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package model;
 
 import java.io.Serializable;
@@ -38,8 +37,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Produto.findByCodigo", query = "SELECT p FROM Produto p WHERE p.codigo = :codigo"),
     @NamedQuery(name = "Produto.findByNome", query = "SELECT p FROM Produto p WHERE p.nome = :nome"),
     @NamedQuery(name = "Produto.findByPreco", query = "SELECT p FROM Produto p WHERE p.preco = :preco"),
-    @NamedQuery(name = "Produto.findByQuantidade", query = "SELECT p FROM Produto p WHERE p.quantidade = :quantidade")})
+    @NamedQuery(name = "Produto.findByQuantidade", query = "SELECT p FROM Produto p WHERE p.quantidade = :quantidade"),
+    @NamedQuery(name = "Produto.findByCodigoAndEvento", query = "SELECT p FROM Produto p WHERE p.codigo = :codigo AND p.eventoId = :eventoId"),
+    @NamedQuery(name = "Produto.findByEvento", query = "SELECT p FROM Produto p WHERE p.eventoId = :eventoId")})
 public class Produto implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -160,5 +162,5 @@ public class Produto implements Serializable {
     public String toString() {
         return "model.Produto[ id=" + id + " ]";
     }
-    
+
 }
