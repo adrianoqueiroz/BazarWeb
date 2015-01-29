@@ -71,8 +71,6 @@ public class ProdutoBean implements Serializable {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
-    
-    
 
     public void create() {
         FacesContext context = FacesContext.getCurrentInstance();

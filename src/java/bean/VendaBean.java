@@ -14,11 +14,11 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.Cliente;
 import model.Item;
+import model.Produto;
 import model.Venda;
 
 /**
@@ -26,12 +26,12 @@ import model.Venda;
  * @author Adriano
  */
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class VendaBean implements Serializable {
 
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
-    
+
     private Venda venda = new Venda();
     private Integer codigoProcurado;
     private String cpfProcurado;
@@ -98,9 +98,19 @@ public class VendaBean implements Serializable {
     }
 
     public void inserirProduto() {
-        boolean inserir = true;
+        boolean inserir;
         FacesContext context = FacesContext.getCurrentInstance();
+        Produto produto = produtoJpaController.findByCodigoAndEvento(codigoProcurado, loginBean.getEventoSelecionado());
 
+        if(produto != null){
+            inserir = getEstoque(produto) > 0;
+            if (!inserir)
+                context.addMessage(null, new FacesMessage("Falha", "Produto indisponível!"));
+        } else {
+            context.addMessage(null, new FacesMessage("Falha", "Produto não encontrado!"));
+            inserir = false;
+        }
+        
         for (Item i : venda.getItemCollection()) {
             if (Objects.equals(i.getProdutoId().getCodigo(), codigoProcurado)) {
                 inserir = false;
@@ -112,7 +122,7 @@ public class VendaBean implements Serializable {
         if (inserir) {
             try {
                 Item item = new Item();
-                item.setProdutoId(produtoJpaController.findByCodigoAndEvento(codigoProcurado, loginBean.getEventoSelecionado()));
+                item.setProdutoId(produto);
                 item.setPrecoVenda(item.getProdutoId().getPreco());
                 item.setQuantidade(1);
                 venda.getItemCollection().add(item);
@@ -164,11 +174,10 @@ public class VendaBean implements Serializable {
     public void incrementaQuantidade(Item item) {
         FacesContext context = FacesContext.getCurrentInstance();
         int quantidadeMaxima = 6;
-        int estoque = 1;
-        //TODO: Verificar Estoque
+        int estoque;
+        estoque = getEstoque(item.getProdutoId());
 
-//        estoque = produtoBean.getEstoque(item.getProdutoId());
-        if (estoque > 0) {
+        if ((estoque - item.getQuantidade()) > 0) {
             int quantidade = item.getQuantidade();
             quantidade++;
 
@@ -178,7 +187,7 @@ public class VendaBean implements Serializable {
                 context.addMessage(null, new FacesMessage("Falha", "Quantidade máxima atingida!"));
             }
         } else {
-            context.addMessage(null, new FacesMessage("Falha", "Produto indisponível!"));
+            context.addMessage(null, new FacesMessage("Falha", "Quantidade indisponível no estoque!"));
         }
 
     }
@@ -195,7 +204,7 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-        
+
         try {
             //verificar se o carrinho não está vazio
             if (venda.getItemCollection().size() > 0) {
@@ -220,8 +229,23 @@ public class VendaBean implements Serializable {
         }
     }
 
+    public int getEstoque(Produto produto) {
+        int estoque;
+
+        Collection<Item> itens = itemJpaController.findItemEntities();
+        int totalVendidos = 0;
+        for (Item i : itens) {
+            if (Objects.equals(i.getProdutoId().getId(), produto.getId())) {
+                totalVendidos += i.getQuantidade();
+            }
+        }
+        estoque = produto.getQuantidade() - totalVendidos;
+        return estoque;
+    }
+
     public Collection<Venda> getListaVendas() {
-        listaVendas = vendaJpaController.findVendaEntities();
+
+        listaVendas = vendaJpaController.findVendaEntitiesByEvento(loginBean.getEventoSelecionado());
         return listaVendas;
     }
 

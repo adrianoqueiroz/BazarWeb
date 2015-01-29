@@ -13,6 +13,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -267,6 +269,21 @@ public class VendaJpaController implements Serializable {
         }
     }
 
+    public List<Venda> findVendaEntitiesByEvento(Evento evento) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Venda.findByEvento");
+            query.setParameter("eventoId", evento);
+            return (List<Venda>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+    
     public Venda findVenda(Integer id) {
         EntityManager em = getEntityManager();
         try {
