@@ -225,7 +225,21 @@ public class ProdutoJpaController implements Serializable {
             em.close();
         }
     }
+        public List<Produto> findProdutoEntitiesByCategoria(Categoria categoria) {
+        EntityManager em = getEntityManager();
 
+        try {
+            Query query = em.createNamedQuery("Produto.findByCategoria");
+            query.setParameter("categoriaId", categoria);
+            return (List<Produto>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+        
     public Produto findProduto(Integer id) {
         EntityManager em = getEntityManager();
         try {

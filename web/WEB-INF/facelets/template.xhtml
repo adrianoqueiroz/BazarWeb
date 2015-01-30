@@ -59,12 +59,7 @@
                             <p:menuitem value="Cliente" update=":dialogCadCliente" oncomplete="PF('cadCliente').show();"/>
                             <p:menuitem value="Funcionário" update=":dialogCadFuncionario" oncomplete="PF('cadFuncionario').show();"/>
                         </p:submenu>
-
-                        <p:submenu label="Relatórios" icon="ui-icon-document">
-                            <p:menuitem value="Diário" />
-                            <p:menuitem value="Semanal" />
-                            <p:menuitem value="Mensal" />
-                        </p:submenu>
+                        <p:menuitem value="Relatório" url="/relatoriogeral.xhtml" icon="ui-icon-document"/>
 
                         <p:menuitem value="Sair" url="/login.xhtml" icon="ui-icon-close" />
                     </p:menubar>
