@@ -17,28 +17,30 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import org.primefaces.event.CellEditEvent;
-import org.primefaces.event.RowEditEvent;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import model.Categoria;
 import model.Evento;
 import model.Item;
 import model.Produto;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
  * @author Adriano
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ProdutoBean implements Serializable {
 
     private Produto produto;
+    private Produto produtoEditado;
     private Collection<Produto> produtoCollection;
     private Evento evento;
     private int estoque;
@@ -58,6 +60,7 @@ public class ProdutoBean implements Serializable {
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
         this.produto = new Produto();
+        this.produtoEditado = new Produto();
     }
 
     public Collection<Produto> getProdutoCollection() {
@@ -75,6 +78,14 @@ public class ProdutoBean implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public Produto getProdutoEditado() {
+        return produtoEditado;
+    }
+
+    public void setProdutoEditado(Produto produtoEditado) {
+        this.produtoEditado = produtoEditado;
     }
 
     public int getEditQuantidade() {
@@ -114,15 +125,19 @@ public class ProdutoBean implements Serializable {
     }
 
     public void edit(Produto produto) {
-        try {
-            produto.setPreco(editPreco);
-            produto.setQuantidade(editQuantidade);
+        FacesContext context = FacesContext.getCurrentInstance();
 
-            produtoJpaController.edit(produto);
-        } catch (Exception ex) {
-            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        if (getEstoque(produto) >= 0) {
+            try {
+                produtoJpaController.edit(produto);
+                produtoEditado = new Produto();
+                context.addMessage(null, new FacesMessage("Alterações realizadas!", produto.getNome()));
+            } catch (Exception ex) {
+                Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            context.addMessage(null, new FacesMessage("Falha!", "O estoque não pode ficar negativo!"));
         }
-
     }
 
     public int getEstoque(Produto produto) {
@@ -172,9 +187,9 @@ public class ProdutoBean implements Serializable {
     }
 
     public void onRowEdit(RowEditEvent event) {
-        Produto produtoEditado = (Produto) event.getObject();
+        Produto produtoEd = (Produto) event.getObject();
 
-        edit(produtoEditado);
+        edit(produtoEd);
 
         FacesMessage msg = new FacesMessage("Produto Editado", ((Produto) event.getObject()).getNome());
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -185,4 +200,7 @@ public class ProdutoBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    public void selecionaProdutoEditado(Produto produto) {
+        setProdutoEditado(produto);
+    }
 }
