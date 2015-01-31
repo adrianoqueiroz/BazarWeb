@@ -14,6 +14,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import model.Categoria;
 import model.Item;
 import model.Produto;
@@ -26,6 +27,9 @@ import org.primefaces.model.chart.PieChartModel;
 @ManagedBean
 public class chartRelatorioBean implements Serializable {
 
+    @ManagedProperty(value = "#{loginBean}")
+    private LoginBean loginBean;
+
     private PieChartModel pie;
     private PieChartModel pieVendasFinalizadas;
     @EJB
@@ -36,6 +40,10 @@ public class chartRelatorioBean implements Serializable {
     private CategoriaJpaController categoriaJpaController;
 
     private Collection<Categoria> categoriaCollection;
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
+    }
 
     @PostConstruct
     public void init() {
@@ -78,12 +86,12 @@ public class chartRelatorioBean implements Serializable {
     }
 
     private void createPieVendasFinalizadas() {
-        
+
         pieVendasFinalizadas = new PieChartModel();
-        
+
         categoriaCollection = categoriaJpaController.findCategoriaEntities();
         for (Categoria c : categoriaCollection) {
-            List<Item> itemCollection = itemJpaController.findItemEntitiesWithVendaPagaAndCategoria(c);
+            List<Item> itemCollection = itemJpaController.findItemEntitiesByEventoWithVendaPagaAndCategoria(loginBean.getEventoSelecionado(), c);
 
             pieVendasFinalizadas.set(c.getNome(), itemCollection.size());
         }

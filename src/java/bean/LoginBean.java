@@ -90,6 +90,8 @@ public class LoginBean implements Serializable {
                 if (eventoSelecionado.getIsActive()) {
                     context.addMessage(null, new FacesMessage("Login Efetuado!", funcionarioLogado.getNome() + ", " + eventoSelecionado.getNome()));
                     externalContext.redirect(url);
+                } else {
+                    context.addMessage(null, new FacesMessage("Falha!", "Este evento não está ativo"));
                 }
             }
         } catch (Exception e) {

@@ -6,7 +6,6 @@
 package bean;
 
 import JPA.CategoriaJpaController;
-import JPA.EventoJpaController;
 import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
 import java.io.Serializable;
@@ -20,7 +19,6 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -28,7 +26,6 @@ import model.Categoria;
 import model.Evento;
 import model.Item;
 import model.Produto;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -39,14 +36,15 @@ import org.primefaces.event.RowEditEvent;
 @ViewScoped
 public class ProdutoBean implements Serializable {
 
+    @ManagedProperty(value = "#{loginBean}")
+    private LoginBean loginBean;
+
     private Produto produto;
     private Produto produtoEditado;
     private Collection<Produto> produtoCollection;
     private Evento evento;
     private int estoque;
     private int idCategoriaSelecionada;
-    @EJB
-    private EventoJpaController eventoJpaController;
     @EJB
     private ProdutoJpaController produtoJpaController;
     @EJB
@@ -61,6 +59,7 @@ public class ProdutoBean implements Serializable {
         this.produtoCollection = new ArrayList<>();
         this.produto = new Produto();
         this.produtoEditado = new Produto();
+        this.evento = new Evento();
     }
 
     public Collection<Produto> getProdutoCollection() {
@@ -102,6 +101,10 @@ public class ProdutoBean implements Serializable {
 
     public void setEditPreco(float editPreco) {
         this.editPreco = editPreco;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 
     public void create() {
@@ -181,8 +184,7 @@ public class ProdutoBean implements Serializable {
     }
 
     public Evento getEvento() {
-        //TODO: pegar o evento atual da sessão
-        evento = eventoJpaController.findEvento(1);
+        evento = loginBean.getEventoSelecionado();
         return evento;
     }
 

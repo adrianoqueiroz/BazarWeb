@@ -20,6 +20,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import model.Categoria;
+import model.Evento;
 import model.Item;
 import model.Produto;
 import model.Venda;
@@ -175,11 +176,12 @@ public class ItemJpaController implements Serializable {
         }
     }
 
-    public List<Item> findItemEntitiesWithVendaPaga() {
+    public List<Item> findItemEntitiesByEventoWithVendaPaga(Evento evento) {
         EntityManager em = getEntityManager();
 
         try {
-            Query query = em.createNamedQuery("Item.findByVendaPaga");
+            Query query = em.createNamedQuery("Item.findByEventoWithVendaPaga");
+            query.setParameter("eventoId", evento);
             return (List<Item>) query.getResultList();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
@@ -189,12 +191,13 @@ public class ItemJpaController implements Serializable {
         }
     }
 
-    public List<Item> findItemEntitiesWithVendaPagaAndCategoria(Categoria categoria) {
+    public List<Item> findItemEntitiesByEventoWithVendaPagaAndCategoria(Evento evento, Categoria categoria) {
         EntityManager em = getEntityManager();
 
         try {
-            Query query = em.createNamedQuery("Item.findByVendaPagaAndCategoria");
+            Query query = em.createNamedQuery("Item.findByEventoWithVendaPagaAndCategoria");
             query.setParameter("categoriaId", categoria);
+            query.setParameter("eventoId", evento);
             return (List<Item>) query.getResultList();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
