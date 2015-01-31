@@ -6,11 +6,17 @@
 package bean;
 
 import JPA.VendaJpaController;
+import JPA.exceptions.NonexistentEntityException;
+import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.Item;
 import model.Venda;
@@ -20,7 +26,7 @@ import model.Venda;
  * @author Adriano
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class ReciboBean implements Serializable {
 
     @EJB
@@ -54,9 +60,18 @@ public class ReciboBean implements Serializable {
         return valor;
     }
 
+    public String selecionaVendaFinalizada(Venda venda) {
+        this.venda = venda;
+        return "/vendafinalizada.xhtml";
+    }
+
     public String selecionaRecibo(Venda venda) {
         this.venda = venda;
-        return "/recibo_venda.xhtml";
+        if (venda.isPago()) {
+            return "/recibo_venda";
+        } else {
+            return "/pagamento.xhtml";
+        }
     }
 
     public String selecionaRecibo() {
@@ -65,7 +80,12 @@ public class ReciboBean implements Serializable {
             this.venda = vendaJpaController.findVenda(idProcurado);
             if (venda.getId() != null) {
                 context.addMessage(null, new FacesMessage("Recibo de venda", venda.getId().toString()));
-                return "/recibo_venda.xhtml";
+                
+                if (venda.isPago()) {
+                    return "/recibo_venda";
+                } else {
+                    return "/pagamento.xhtml";
+                }
             } else {
                 idProcurado = null;
                 context.addMessage(null, new FacesMessage("Falha", "Venda não encontrada!"));

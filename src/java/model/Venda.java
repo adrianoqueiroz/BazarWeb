@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package model;
 
 import java.io.Serializable;
@@ -39,8 +38,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Venda.findAll", query = "SELECT v FROM Venda v"),
     @NamedQuery(name = "Venda.findById", query = "SELECT v FROM Venda v WHERE v.id = :id"),
     @NamedQuery(name = "Venda.findByEvento", query = "SELECT v FROM Venda v WHERE v.eventoId = :eventoId ORDER BY v.id DESC"),
+    @NamedQuery(name = "Venda.findByEventoAndPago", query = "SELECT v FROM Venda v WHERE v.eventoId = :eventoId AND v.pago = TRUE ORDER BY v.id DESC"),
+    @NamedQuery(name = "Venda.findByEventoAndNotPago", query = "SELECT v FROM Venda v WHERE v.eventoId = :eventoId AND v.pago = FALSE ORDER BY v.id DESC"),
     @NamedQuery(name = "Venda.findByDataVenda", query = "SELECT v FROM Venda v WHERE v.dataVenda = :dataVenda")})
 public class Venda implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,6 +52,8 @@ public class Venda implements Serializable {
     @Column(name = "data_venda")
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date dataVenda;
+    @Column(name = "pago")
+    private Boolean pago;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vendaId")
     private Collection<Item> itemCollection;
     @JoinColumn(name = "evento_id", referencedColumnName = "id")
@@ -92,6 +96,14 @@ public class Venda implements Serializable {
         this.dataVenda = dataVenda;
     }
 
+    public Boolean isPago() {
+        return pago;
+    }
+
+    public void setPago(Boolean pago) {
+        this.pago = pago;
+    }
+    
     @XmlTransient
     public Collection<Item> getItemCollection() {
         return itemCollection;
@@ -149,5 +161,5 @@ public class Venda implements Serializable {
     public String toString() {
         return "model.Venda[ id=" + id + " ]";
     }
-    
+
 }

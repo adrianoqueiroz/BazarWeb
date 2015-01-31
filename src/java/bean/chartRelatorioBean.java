@@ -6,6 +6,7 @@
 package bean;
 
 import JPA.CategoriaJpaController;
+import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
 import java.io.Serializable;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import model.Categoria;
+import model.Item;
 import model.Produto;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -25,13 +27,16 @@ import org.primefaces.model.chart.PieChartModel;
 public class chartRelatorioBean implements Serializable {
 
     private PieChartModel pie;
-
+    private PieChartModel pieVendasFinalizadas;
+    @EJB
+    private ItemJpaController itemJpaController;
     @EJB
     private ProdutoJpaController produtoJpaController;
     @EJB
     private CategoriaJpaController categoriaJpaController;
 
     private Collection<Categoria> categoriaCollection;
+
     @PostConstruct
     public void init() {
         createPieModels();
@@ -42,17 +47,18 @@ public class chartRelatorioBean implements Serializable {
     }
 
     private void createPieModels() {
+        createPieVendasFinalizadas();
         createPieModel2();
     }
 
-       private void createPieModel2() {
+    private void createPieModel2() {
 
         pie = new PieChartModel();
 
         categoriaCollection = categoriaJpaController.findCategoriaEntities();
-        for (Categoria c: categoriaCollection){
+        for (Categoria c : categoriaCollection) {
             List<Produto> produtoCollection = produtoJpaController.findProdutoEntitiesByCategoria(c);
-            
+
             pie.set(c.getNome(), produtoCollection.size());
         }
 
@@ -60,7 +66,33 @@ public class chartRelatorioBean implements Serializable {
         pie.setLegendPosition("w");
         pie.setFill(true);
         pie.setShowDataLabels(true);
-        pie.setDiameter(150);
+        pie.setDiameter(50);
+    }
+
+    public PieChartModel getPieVendasFinalizadas() {
+        return pieVendasFinalizadas;
+    }
+
+    public void setPieVendasFinalizadas(PieChartModel pieVendasFinalizadas) {
+        this.pieVendasFinalizadas = pieVendasFinalizadas;
+    }
+
+    private void createPieVendasFinalizadas() {
+        
+        pieVendasFinalizadas = new PieChartModel();
+        
+        categoriaCollection = categoriaJpaController.findCategoriaEntities();
+        for (Categoria c : categoriaCollection) {
+            List<Item> itemCollection = itemJpaController.findItemEntitiesWithVendaPagaAndCategoria(c);
+
+            pieVendasFinalizadas.set(c.getNome(), itemCollection.size());
+        }
+
+        pieVendasFinalizadas.setTitle("Vendas por Categoria");
+        pieVendasFinalizadas.setLegendPosition("w");
+        pieVendasFinalizadas.setFill(true);
+        pieVendasFinalizadas.setShowDataLabels(true);
+        pieVendasFinalizadas.setDiameter(50);
     }
 
 }

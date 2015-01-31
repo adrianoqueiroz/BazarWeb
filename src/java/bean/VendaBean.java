@@ -204,11 +204,13 @@ public class VendaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         venda.setFuncionarioId(loginBean.getFuncionarioLogado());
         venda.setEventoId(loginBean.getEventoSelecionado());
-
+        venda.setPago(Boolean.FALSE);
+        
         try {
-            //verificar se o carrinho não está vazio
+            //verificar se o carrinho não está vazio e se o cliente foi selecionado
             if (venda.getItemCollection().size() > 0) {
-                if (venda.getFuncionarioId().getNome() != null) {
+                //verifica se o funcionario e o cliente foram selecionados
+                if (venda.getFuncionarioId().getId() != null && venda.getClienteId().getId() != null) {
                     venda.setDataVenda(new Date());
                     for (Item item : venda.getItemCollection()) {
                         itemJpaController.create(item);
@@ -243,12 +245,18 @@ public class VendaBean implements Serializable {
         return estoque;
     }
 
-    public Collection<Venda> getListaVendas() {
+    public Collection<Venda> getListaVendasPagas() {
 
-        listaVendas = vendaJpaController.findVendaEntitiesByEvento(loginBean.getEventoSelecionado());
+        listaVendas = vendaJpaController.findVendaEntitiesByEventoAndPago(loginBean.getEventoSelecionado());
         return listaVendas;
     }
+    
+    public Collection<Venda> getListaVendasNaoPagas() {
 
+        listaVendas = vendaJpaController.findVendaEntitiesByEventoAndNotPago(loginBean.getEventoSelecionado());
+        return listaVendas;
+    }
+    
     public double calculaValorTotal(Venda venda) {
         double total = 0;
         for (Item item : venda.getItemCollection()) {

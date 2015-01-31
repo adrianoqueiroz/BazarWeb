@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package JPA;
 
 import JPA.exceptions.IllegalOrphanException;
@@ -38,7 +37,7 @@ public class VendaJpaController implements Serializable {
 
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
-    
+
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -283,7 +282,37 @@ public class VendaJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<Venda> findVendaEntitiesByEventoAndPago(Evento evento) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Venda.findByEventoAndPago");
+            query.setParameter("eventoId", evento);
+            return (List<Venda>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Venda> findVendaEntitiesByEventoAndNotPago(Evento evento) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Venda.findByEventoAndNotPago");
+            query.setParameter("eventoId", evento);
+            return (List<Venda>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public Venda findVenda(Integer id) {
         EntityManager em = getEntityManager();
         try {
@@ -305,5 +334,5 @@ public class VendaJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

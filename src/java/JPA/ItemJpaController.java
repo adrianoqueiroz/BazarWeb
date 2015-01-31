@@ -3,21 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package JPA;
 
 import JPA.exceptions.NonexistentEntityException;
 import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import model.Categoria;
 import model.Item;
 import model.Produto;
 import model.Venda;
@@ -31,7 +33,7 @@ public class ItemJpaController implements Serializable {
 
     @PersistenceUnit(unitName = "BazarWebPU") //inject from your application server
     private EntityManagerFactory emf;
-    
+
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -173,6 +175,35 @@ public class ItemJpaController implements Serializable {
         }
     }
 
+    public List<Item> findItemEntitiesWithVendaPaga() {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Item.findByVendaPaga");
+            return (List<Item>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Item> findItemEntitiesWithVendaPagaAndCategoria(Categoria categoria) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Item.findByVendaPagaAndCategoria");
+            query.setParameter("categoriaId", categoria);
+            return (List<Item>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public Item findItem(Integer id) {
         EntityManager em = getEntityManager();
         try {
@@ -194,5 +225,5 @@ public class ItemJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

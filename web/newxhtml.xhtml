@@ -1,0 +1,44 @@
+<ui:composition template="/WEB-INF/facelets/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="cabecalho">
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <span class="clearFull div20"/>
+
+        <span class="clearFull div10"/>
+
+        <div align="center">
+            <h:panelGrid style="text-align: center">
+                <h:panelGrid style="font-family: Georgia; color: #585858; font-size: 23px">
+                    <p>Venda finalizada com sucesso!</p>
+                    <p>O pagamento deverá ser realizado no caixa</p> 
+                </h:panelGrid>
+
+
+                <div style="margin: auto">
+                    <p:panelGrid columns="2" style="margin: auto">
+                        <f:facet name="header">
+                            <h1>Venda Nº </h1>
+                        </f:facet>
+
+                        <h:outputText value="Total à Pagar: " />
+                        <h:outputText value="R$" />
+                        <h:outputText value="Cliente: " />
+                        <h:outputText value="" />
+                        <h:outputText value="Data: " />
+                        <h:outputText value="" />
+                    </p:panelGrid>
+                </div>
+
+
+            </h:panelGrid>
+        </div>
+    </ui:define>
+
+</ui:composition>
