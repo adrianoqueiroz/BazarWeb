@@ -62,7 +62,11 @@ public class ReciboBean implements Serializable {
 
     public String selecionaVendaFinalizada(Venda venda) {
         this.venda = venda;
-        return "/vendafinalizada.xhtml";
+        if (venda.getId() != null) {
+            return "/vendafinalizada.xhtml";
+        } else {
+            return null;
+        }
     }
 
     public String selecionaRecibo(Venda venda) {
@@ -80,7 +84,7 @@ public class ReciboBean implements Serializable {
             this.venda = vendaJpaController.findVenda(idProcurado);
             if (venda.getId() != null) {
                 context.addMessage(null, new FacesMessage("Recibo de venda", venda.getId().toString()));
-                
+
                 if (venda.isPago()) {
                     return "/recibo_venda";
                 } else {

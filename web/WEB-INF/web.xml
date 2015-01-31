@@ -14,9 +14,7 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
+        <session-timeout>60</session-timeout> <!--default 30-->
     </session-config>
     <welcome-file-list>
         <welcome-file>login.xhtml</welcome-file>
