@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,6 +20,13 @@ import javax.faces.bean.ViewScoped;
 import model.Categoria;
 import model.Item;
 import model.Relatorio;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartSeries;
+import org.primefaces.model.chart.CategoryAxis;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
+import org.primefaces.model.chart.LinearAxis;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -44,6 +52,9 @@ public class RelatorioBean implements Serializable {
     private PieChartModel pieVendasFinalizadasGeral;
     private PieChartModel pieVendasFinalizadasPeriodo;
 
+    private LineChartModel multiAxisModel;
+    private LineChartModel multiAxisModelPeriodo;
+
     private int produtosVendidosGeral;
     private float totalGeral;
 
@@ -62,26 +73,149 @@ public class RelatorioBean implements Serializable {
         dataFinal = new Date();
     }
 
+    @PostConstruct
+    public void init() {
+        categoriaCollection = categoriaJpaController.findCategoriaEntities();
+        createRelatorioCollection();
+        createRelatorioCollectionPeriodo();
+        createMultiAxisModel();
+        createMultiAxisModelPeriodo();
+    }
+
     public void setLoginBean(LoginBean loginBean) {
         this.loginBean = loginBean;
+    }
+
+    public LineChartModel getMultiAxisModel() {
+        return multiAxisModel;
+    }
+
+    public LineChartModel getMultiAxisModelPeriodo() {
+        return multiAxisModelPeriodo;
+    }
+
+    private void createMultiAxisModel() {
+        multiAxisModel = new LineChartModel();
+        multiAxisModel = initBarModel();
+
+        multiAxisModel.setAnimate(true);
+        multiAxisModel.setLegendPosition("ne");
+
+    }
+
+    private void createMultiAxisModelPeriodo() {
+        multiAxisModelPeriodo = new LineChartModel();
+        multiAxisModelPeriodo = initBarModelPeriodo();
+
+        multiAxisModelPeriodo.setAnimate(true);
+        multiAxisModelPeriodo.setLegendPosition("ne");
+
+    }
+
+    private LineChartModel initBarModel() {
+        int maxProdutosVendidos;
+        float maxFaturamento;
+
+        BarChartSeries produtosVendidos = new BarChartSeries();
+        LineChartSeries faturamento = new LineChartSeries();
+
+        faturamento.setLabel("Faturamento");
+        faturamento.setYaxis(AxisType.Y2);
+
+        produtosVendidos.setLabel("Produtos Vendidos");
+
+        maxProdutosVendidos = 0;
+        maxFaturamento = 0;
+        for (Relatorio r : relatorioCollection) {
+            if (r.getProdutosVendidos() > maxProdutosVendidos) {
+                maxProdutosVendidos = r.getProdutosVendidos();
+            }
+            if (r.getTotal() > maxFaturamento) {
+                maxFaturamento = r.getTotal();
+            }
+
+            produtosVendidos.set(r.getCategoria(), r.getProdutosVendidos());
+            faturamento.set(r.getCategoria(), r.getTotal());
+        }
+
+        multiAxisModel.addSeries(produtosVendidos);
+        multiAxisModel.addSeries(faturamento);
+
+        multiAxisModel.setTitle("Produtos Vendidos e Faturamento por Categoria");
+        multiAxisModel.setMouseoverHighlight(false);
+
+        multiAxisModel.getAxes().put(AxisType.X, new CategoryAxis("Categoria"));
+
+        Axis yAxis = multiAxisModel.getAxis(AxisType.Y);
+        yAxis.setLabel("Produtos Vendidos");
+        yAxis.setMin(0);
+        yAxis.setMax(maxProdutosVendidos + 10);
+
+        Axis y2Axis = new LinearAxis("Faturamento em Reais");
+        y2Axis.setMin(0);
+        y2Axis.setMax(maxFaturamento + 1000);
+
+        multiAxisModel.getAxes().put(AxisType.Y2, y2Axis);
+
+        return multiAxisModel;
+    }
+
+    private LineChartModel initBarModelPeriodo() {
+        int maxProdutosVendidos;
+        float maxFaturamento;
+
+        BarChartSeries produtosVendidos = new BarChartSeries();
+        LineChartSeries faturamento = new LineChartSeries();
+
+        faturamento.setLabel("Faturamento");
+        faturamento.setYaxis(AxisType.Y2);
+
+        produtosVendidos.setLabel("Produtos Vendidos");
+
+        maxProdutosVendidos = 0;
+        maxFaturamento = 0;
+        for (Relatorio r : relatorioCollectionPeriodo) {
+            if (r.getProdutosVendidos() > maxProdutosVendidos) {
+                maxProdutosVendidos = r.getProdutosVendidos();
+            }
+            if (r.getTotal() > maxFaturamento) {
+                maxFaturamento = r.getTotal();
+            }
+
+            produtosVendidos.set(r.getCategoria(), r.getProdutosVendidos());
+            faturamento.set(r.getCategoria(), r.getTotal());
+        }
+
+        multiAxisModelPeriodo.addSeries(produtosVendidos);
+        multiAxisModelPeriodo.addSeries(faturamento);
+
+        multiAxisModelPeriodo.setTitle("Produtos Vendidos e Faturamento por Categoria");
+        multiAxisModelPeriodo.setMouseoverHighlight(false);
+
+        multiAxisModelPeriodo.getAxes().put(AxisType.X, new CategoryAxis("Categoria"));
+
+        Axis yAxis = multiAxisModelPeriodo.getAxis(AxisType.Y);
+        yAxis.setLabel("Produtos Vendidos");
+        yAxis.setMin(0);
+        yAxis.setMax(maxProdutosVendidos + 10);
+
+        Axis y2Axis = new LinearAxis("Faturamento em Reais");
+        y2Axis.setMin(0);
+        y2Axis.setMax(maxFaturamento + 1000);
+
+        multiAxisModelPeriodo.getAxes().put(AxisType.Y2, y2Axis);
+
+        return multiAxisModelPeriodo;
     }
 
     private void createPieVendasFinalizadasGeral() {
         pieVendasFinalizadasGeral = new PieChartModel();
 
-        categoriaCollection = categoriaJpaController.findCategoriaEntities();
-        for (Categoria c : categoriaCollection) {
-            List<Item> itemCollection = itemJpaController.findItemEventoCategoriaPago(loginBean.getEventoSelecionado(), c);
-            int quantidadeVendidos = 0;
-            for (Item i : itemCollection) {
-                quantidadeVendidos += i.getQuantidade();
-            }
-            if (quantidadeVendidos > 0) {
-                pieVendasFinalizadasGeral.set(c.getNome(), quantidadeVendidos);
-            }
+        for (Relatorio r : relatorioCollection) {
+            pieVendasFinalizadasGeral.set(r.getCategoria(), r.getProdutosVendidos());
         }
 
-        pieVendasFinalizadasGeral.setTitle("Vendas por Categoria");
+        pieVendasFinalizadasGeral.setTitle("Produtos Vendidos");
         pieVendasFinalizadasGeral.setLegendPosition("w");
         pieVendasFinalizadasGeral.setFill(true);
         pieVendasFinalizadasGeral.setShowDataLabels(true);
@@ -91,19 +225,10 @@ public class RelatorioBean implements Serializable {
     private void createPieVendasFinalizadasPeriodo() {
         pieVendasFinalizadasPeriodo = new PieChartModel();
 
-        categoriaCollection = categoriaJpaController.findCategoriaEntities();
-        for (Categoria c : categoriaCollection) {
-            List<Item> itemCollection = itemJpaController.EventoCategoriaPeriodoPago(loginBean.getEventoSelecionado(), c, dataInicial, dataFinal);
-            int quantidadeVendidos = 0;
-            for (Item i : itemCollection) {
-                quantidadeVendidos += i.getQuantidade();
-            }
-            if (quantidadeVendidos > 0) {
-                pieVendasFinalizadasPeriodo.set(c.getNome(), quantidadeVendidos);
-            }
+        for (Relatorio r : relatorioCollectionPeriodo) {
+            pieVendasFinalizadasPeriodo.set(r.getCategoria(), r.getProdutosVendidos());
         }
-
-        pieVendasFinalizadasPeriodo.setTitle("Vendas por Categoria");
+        pieVendasFinalizadasPeriodo.setTitle("Produtos Vendidos");
         pieVendasFinalizadasPeriodo.setLegendPosition("w");
         pieVendasFinalizadasPeriodo.setFill(true);
         pieVendasFinalizadasPeriodo.setShowDataLabels(true);
@@ -116,8 +241,6 @@ public class RelatorioBean implements Serializable {
     }
 
     private void createRelatorioCollection() {
-        categoriaCollection = categoriaJpaController.findCategoriaEntities();
-
         List<Item> itemCollection;
         relatorioCollection = new ArrayList<>();
         totalGeral = 0;
@@ -149,8 +272,6 @@ public class RelatorioBean implements Serializable {
     }
 
     private void createRelatorioCollectionPeriodo() {
-        categoriaCollection = categoriaJpaController.findCategoriaEntities();
-
         List<Item> itemCollection;
 
         relatorioCollectionPeriodo = new ArrayList<>();
@@ -188,8 +309,9 @@ public class RelatorioBean implements Serializable {
     }
 
     public void atualizaRelatorioPeriodo() {
-        createPieVendasFinalizadasPeriodo();
         createRelatorioCollectionPeriodo();
+        createPieVendasFinalizadasPeriodo();
+        createMultiAxisModelPeriodo();
     }
 
     public void setRelatorioCollection(Collection<Relatorio> relatorioCollection) {
