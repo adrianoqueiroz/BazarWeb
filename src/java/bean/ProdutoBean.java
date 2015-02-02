@@ -8,11 +8,12 @@ package bean;
 import JPA.CategoriaJpaController;
 import JPA.ItemJpaController;
 import JPA.ProdutoJpaController;
+import JPA.exceptions.NonexistentEntityException;
+import JPA.exceptions.RollbackFailureException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -26,7 +27,6 @@ import model.Categoria;
 import model.Evento;
 import model.Item;
 import model.Produto;
-import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -39,12 +39,27 @@ public class ProdutoBean implements Serializable {
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
 
+    private Categoria novaCategoria;
+    private Categoria categoriaEditada;
+
     private Produto produto;
     private Produto produtoEditado;
     private Collection<Produto> produtoCollection;
     private Evento evento;
     private int estoque;
     private int idCategoriaSelecionada;
+
+    private boolean adicionarEstoque = true;
+    private int qtdAdicionarEstoque;
+
+    public boolean isAdicionarEstoque() {
+        return adicionarEstoque;
+    }
+
+    public void setAdicionarEstoque(boolean adicionarEstoque) {
+        this.adicionarEstoque = adicionarEstoque;
+    }
+
     @EJB
     private ProdutoJpaController produtoJpaController;
     @EJB
@@ -57,6 +72,8 @@ public class ProdutoBean implements Serializable {
 
     public ProdutoBean() {
         this.produtoCollection = new ArrayList<>();
+        this.novaCategoria = new Categoria();
+        this.categoriaEditada = new Categoria();
         this.produto = new Produto();
         this.produtoEditado = new Produto();
         this.evento = new Evento();
@@ -107,14 +124,26 @@ public class ProdutoBean implements Serializable {
         this.loginBean = loginBean;
     }
 
+    public void selecionaProdutoEditado(Produto produto) {
+        setProdutoEditado(produto);
+    }
+
+    public int getQtdAdicionarEstoque() {
+        return qtdAdicionarEstoque;
+    }
+
+    public void setQtdAdicionarEstoque(int qtdAdicionarEstoque) {
+        this.qtdAdicionarEstoque = qtdAdicionarEstoque;
+    }
+
     public void create() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
 
             produto.setEventoId(this.getEvento());
 
-            Categoria categoria = categoriaJpaController.findCategoria(idCategoriaSelecionada);
-            produto.setCategoriaId(categoria);
+            Categoria categoriaSelecionada = categoriaJpaController.findCategoria(idCategoriaSelecionada);
+            produto.setCategoriaId(categoriaSelecionada);
 
             produtoJpaController.create(produto);
 
@@ -129,8 +158,15 @@ public class ProdutoBean implements Serializable {
 
     public void edit(Produto produto) {
         FacesContext context = FacesContext.getCurrentInstance();
-
-        if (getEstoque(produto) >= 0) {
+        int quantidadeAtual = produto.getQuantidade();
+        
+        if (adicionarEstoque) {
+            produto.setQuantidade(quantidadeAtual + qtdAdicionarEstoque);
+        } else {
+            produto.setQuantidade(quantidadeAtual - qtdAdicionarEstoque);
+        }
+        qtdAdicionarEstoque = 0;
+        if ((getEstoque(produto)) >= 0) {
             try {
                 produtoJpaController.edit(produto);
                 produtoEditado = new Produto();
@@ -139,22 +175,24 @@ public class ProdutoBean implements Serializable {
                 Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
+            produto.setQuantidade(quantidadeAtual);
             context.addMessage(null, new FacesMessage("Falha!", "O estoque não pode ficar negativo!"));
         }
     }
 
     public int getEstoque(Produto produto) {
-        estoque = produto.getQuantidade() - getQtdVendidos(produto);
+        estoque = 0;
+        if (produto.getId() != null) {
+            estoque = produto.getQuantidade() - getQtdVendidos(produto);
+        }
         return estoque;
     }
 
     public int getQtdVendidos(Produto produto) {
-        Collection<Item> itens = itemJpaController.findItemEntities();
+        Collection<Item> itens = itemJpaController.findItemEntitiesByProduto(produto);
         int totalVendidos = 0;
         for (Item i : itens) {
-            if (Objects.equals(i.getProdutoId().getId(), produto.getId())) {
-                totalVendidos += i.getQuantidade();
-            }
+            totalVendidos += i.getQuantidade();
         }
         return totalVendidos;
     }
@@ -188,21 +226,55 @@ public class ProdutoBean implements Serializable {
         return evento;
     }
 
-    public void onRowEdit(RowEditEvent event) {
-        Produto produtoEd = (Produto) event.getObject();
+    public void editarCategoria() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            Categoria c = categoriaJpaController.findCategoria(categoriaEditada.getId());
+            String nomeAntigo = c.getNome();
+            c.setNome(categoriaEditada.getNome());
+            categoriaJpaController.edit(c);
 
-        edit(produtoEd);
+            context.addMessage(null, new FacesMessage("Categoria editada!", nomeAntigo + " -> " + c.getNome()));
 
-        FacesMessage msg = new FacesMessage("Produto Editado", ((Produto) event.getObject()).getNome());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+            categoriaEditada = new Categoria();
+
+        } catch (NonexistentEntityException ex) {
+            context.addMessage(null, new FacesMessage("Categoria não encontrada!", produto.getNome()));
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RollbackFailureException ex) {
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage("Falha ao editar a categoria!", produto.getNome()));
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edição cancelada", ((Produto) event.getObject()).getNome());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+    public void adicionarCategoria() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            categoriaJpaController.create(novaCategoria);
+            context.addMessage(null, new FacesMessage("Categoria cadastrada!", novaCategoria.getNome()));
+            novaCategoria = new Categoria();
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage("Falha ao cadastrar a categoria!", novaCategoria.getNome()));
+            Logger.getLogger(ProdutoBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
-    public void selecionaProdutoEditado(Produto produto) {
-        setProdutoEditado(produto);
+    public Categoria getNovaCategoria() {
+        return novaCategoria;
+    }
+
+    public void setNovaCategoria(Categoria novaCategoria) {
+        this.novaCategoria = novaCategoria;
+    }
+
+    public Categoria getCategoriaEditada() {
+        return categoriaEditada;
+    }
+
+    public void setCategoriaEditada(Categoria categoriaEditada) {
+        this.categoriaEditada = categoriaEditada;
     }
 }

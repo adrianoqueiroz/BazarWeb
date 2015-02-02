@@ -8,6 +8,102 @@
     <ui:define name="conteudo">
         <div id="area_venda">
             <h:panelGrid columns="1">
+                <h:panelGrid columns="3">
+                    <p:panel header="Novo Produto">
+                        <h:form>
+                            <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
+                                <h:outputLabel value="Código: " />
+                                <p:inputText style="width: 230px;" required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
+                                <h:outputLabel value="Produto: " />
+                                <p:inputText style="width: 230px;" required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
+                                <h:outputLabel value="Categoria: " />
+                                <p:selectOneMenu id="categoria" style="width: 230px;" value="#{produtoBean.idCategoriaSelecionada}">
+                                    <f:selectItem itemLabel="Selecione a categoria..."/>
+                                    <f:selectItems value="#{produtoBean.selectItemCategorias}" />
+                                </p:selectOneMenu>  
+                                <h:outputLabel value="Preço: " />  
+                                <p:inputText style="width: 230px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
+                                <h:outputLabel value="Quantidade: " />  
+                                <p:inputText style="width: 230px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
+                            </h:panelGrid>
+
+                            <div align="right">
+                                <h:panelGrid>
+                                    <p:commandButton ajax="false" actionListener="#{produtoBean.create()}" value="Salvar Produto" />
+                                </h:panelGrid>
+                            </div>
+                        </h:form>
+                        <p:spacer height="6" width="6"/>
+                    </p:panel>
+
+                    <h:panelGrid>
+                        <p:panel header="Nova Categoria">
+                            <h:form>
+                                <h:panelGrid>
+                                    <p:inputText style="width: 200px;" required="true" requiredMessage="Insira o nome da Categoria" value="#{produtoBean.novaCategoria.nome}" />
+                                </h:panelGrid>
+
+                                <div align="right">
+                                    <h:panelGrid>
+                                        <p:commandButton ajax="false" action="#{produtoBean.adicionarCategoria()}" update="area_venda" value="Salvar Categoria" />
+                                    </h:panelGrid>
+                                </div> 
+                            </h:form>
+                            <p:spacer height="5" width="5"/>
+                        </p:panel>
+
+                        <p:panel header="Editar Categoria">
+                            <h:form>
+                                <h:panelGrid>
+                                    <p:selectOneMenu style="width: 210px;" id="editarCategoria" value="#{produtoBean.categoriaEditada.id}">
+                                        <f:selectItem itemLabel="Selecione a categoria..."/>
+                                        <f:selectItems value="#{produtoBean.selectItemCategorias}" />
+                                    </p:selectOneMenu> 
+                                    <h:outputText value="Novo nome da categoria"/>
+                                    <p:inputText style="width: 200px;" required="true" requiredMessage="Insira o nome da Categoria" value="#{produtoBean.categoriaEditada.nome}" />
+                                </h:panelGrid>
+
+                                <div align="right">
+                                    <h:panelGrid>
+                                        <p:commandButton ajax="false" action="#{produtoBean.editarCategoria()}" update="area_venda" value="Salvar Alteração" />
+                                    </h:panelGrid>
+                                </div>                         
+                            </h:form>
+                        </p:panel>
+                    </h:panelGrid>
+
+                    <p:panel header="Editar Produto">
+                        <h:form id="formEditarProduto">
+                            <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
+                                <h:outputLabel value="Código: " />
+                                <h:outputLabel value="#{produtoBean.produtoEditado.codigo}" />
+                                <h:outputLabel value="Produto: " />
+                                <h:outputLabel value="#{produtoBean.produtoEditado.nome}" />
+                                <h:outputLabel value="Categoria: " />
+                                <h:outputLabel value="#{produtoBean.produtoEditado.categoriaId.nome}" /> 
+                                <h:outputLabel value="Estoque: " />
+                                <h:outputLabel value="#{produtoBean.getEstoque(produtoBean.produtoEditado)}" /> 
+                                <h:outputLabel value="Preço: " />  
+                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produtoEditado.preco}" />
+
+                                <p:selectBooleanButton id="addEstoque" value="#{produtoBean.adicionarEstoque}" onLabel="Adicionar" offLabel="Remover" style="width:90px" />
+
+                                <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                    <h:outputText id="output" value="#{produtoBean.qtdAdicionarEstoque} no Estoque" />
+                                    <h:inputHidden id="txt2" value="#{produtoBean.qtdAdicionarEstoque}" />
+                                    <p:slider for="txt2" display="output" style="width: 150px" displayTemplate="{value} ao estoque" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                            <div align="right">
+                                <h:panelGrid>
+                                    <p:commandButton ajax="false" actionListener="#{produtoBean.edit(produtoBean.produtoEditado)}" update="formProdutos" value="Salvar Alterações" />
+                                </h:panelGrid>
+                            </div>              
+                        </h:form>
+                    </p:panel>
+                </h:panelGrid>
+
                 <p:panel header="Produtos Cadastrados">
                     <h:form id="formProdutos">
                         <p:growl id="msgs" showDetail="true"/>
@@ -38,57 +134,12 @@
                             <p:column headerText="Estoque" style="text-align: center;">  
                                 <h:outputText value="#{produtoBean.getEstoque(produto)}" />  
                             </p:column>
-                            <p:column style="text-align: center;">
+                            <p:column headerText="Editar" style="text-align: center;">
                                 <p:commandButton action="#{produtoBean.selecionaProdutoEditado(produto)}" update=":formEditarProduto" icon="ui-icon-pencil" title="Editar"/>
                             </p:column>
                         </p:dataTable>
                     </h:form>
                 </p:panel>
-
-                <h:panelGrid columns="2">
-                    <p:panel header="Novo Produto">
-                        <h:form>
-                            <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
-                                <h:outputLabel value="Código: " />
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira o Código do Produto" value="#{produtoBean.produto.codigo}"/> 
-                                <h:outputLabel value="Produto: " />
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira o nome do Produto" value="#{produtoBean.produto.nome}" />
-                                <h:outputLabel value="Categoria: " />
-                                <p:selectOneMenu id="categoria" value="#{produtoBean.idCategoriaSelecionada}">
-                                    <f:selectItem itemLabel="Selecione a categoria..."/>
-                                    <f:selectItems value="#{produtoBean.selectItemCategorias}" />
-                                </p:selectOneMenu>  
-                                <h:outputLabel value="Preço: " />  
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produto.preco}" />
-                                <h:outputLabel value="Quantidade: " />  
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produto.quantidade}" />
-                                <p:commandButton ajax="false" value="Cancelar" />
-                                <p:commandButton ajax="false" actionListener="#{produtoBean.create()}" value="Salvar Produto" />
-                            </h:panelGrid>
-                        </h:form>
-                    </p:panel>
-
-                    <p:panel header="Editar Produto">
-                        <h:form id="formEditarProduto">
-                            <h:panelGrid columns="2" cellpadding="5" styleClass="semBorda">
-                                <h:outputLabel value="ID: " />
-                                <h:outputLabel value="#{produtoBean.produtoEditado.id}" />
-                                <h:outputLabel value="Código: " />
-                                <h:outputLabel value="#{produtoBean.produtoEditado.codigo}" />
-                                <h:outputLabel value="Produto: " />
-                                <h:outputLabel value="#{produtoBean.produtoEditado.nome}" />
-                                <h:outputLabel value="Categoria: " />
-                                <h:outputLabel value="#{produtoBean.produtoEditado.categoriaId.nome}" /> 
-                                <h:outputLabel value="Preço: " />  
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira o preço do Produto" value="#{produtoBean.produtoEditado.preco}" />
-                                <h:outputLabel value="Quantidade: " />  
-                                <p:inputText style="width: 150px;" required="true" requiredMessage="Insira a quantidade do Produto" value="#{produtoBean.produtoEditado.quantidade}" />
-                                <p:commandButton ajax="false" value="Cancelar" />
-                                <p:commandButton ajax="false" actionListener="#{produtoBean.edit(produtoBean.produtoEditado)}" update="formProdutos" value="Salvar Alterações" />
-                            </h:panelGrid>
-                        </h:form>
-                    </p:panel>
-                </h:panelGrid>
             </h:panelGrid>
         </div>
     </ui:define>

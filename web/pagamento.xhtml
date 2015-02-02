@@ -52,8 +52,8 @@
             <span class="clearFull div10"/>
 
             <h:form>
-                <p:commandButton value="Confirmar Pagamento" action="#{pagamentoBean.confirmarPagamento(reciboBean.venda)}">
-                    <p:confirm header="Confirmação" message="Valor recebido: #{reciboBean.calculaValorCompra()}. Você confirma o recebimento?" icon="ui-icon-alert" />
+                <p:commandButton value="Confirmar Pagamento" action="#{pagamentoBean.confirmarPagamento(reciboBean.venda)}" icon="ui-icon-check">
+                    <p:confirm header="Confirmação" message="Valor à receber: R$#{reciboBean.calculaValorCompra()}. Você confirma o recebimento?" icon="ui-icon-alert" />
                 </p:commandButton>
 
                 <p:confirmDialog  global="true" showEffect="fade" hideEffect="explode">  

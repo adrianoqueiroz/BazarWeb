@@ -26,8 +26,14 @@
                     <f:selectItem itemLabel="Feminino" itemValue="Feminino" />  
                 </p:selectOneRadio>  
             </h:panelGrid>
-
-            <p:commandButton ajax="false" actionListener="#{clienteBean.create()}" value="Salvar" />
         </h:panelGrid> 
+
+        <span class="clearFull div10"/>
+        <p:separator />
+        <span class="clearFull div10"/>
+
+        <div align="right">
+            <p:commandButton ajax="false" actionListener="#{clienteBean.create()}" value="Cadastrar" icon="ui-icon-check" />
+        </div>
     </h:form>
 </html> 

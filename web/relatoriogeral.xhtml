@@ -13,16 +13,22 @@
 
         <span class="clearFull div10"/>
 
+        <div align="center" style="font-family: Georgia; color: #585858; font-size: 25px; text-align: center">
+            <p>Relatório de Vendas do Evento #{loginBean.eventoSelecionado.nome}</p>
+        </div>
+
+        <span class="clearFull div20"/>
+        <p:separator />
+        <span class="clearFull div20"/>
 
         <h:panelGrid columns="2">
             <h:panelGrid>
-
                 <p:panelGrid columns="1">
                     <f:facet name="header">
-                        <h3>Relatório Geral</h3>
+                        <h3>Geral</h3>
                     </f:facet>
                     <h:form>
-                        <p:dataTable var="relatorio" value="#{relatorioBean.relatorioCollection}"  > 
+                        <p:dataTable var="relatorio" value="#{relatorioBean.relatorioCollection}" emptyMessage="Nenhuma venda realizada." > 
                             <p:column headerText="Categoria" style="text-align: center;">  
                                 <h:outputText value="#{relatorio.categoria}" />  
                             </p:column> 
@@ -34,19 +40,73 @@
                             </p:column> 
                         </p:dataTable>
                     </h:form>
-                    
+
                     <h:panelGrid columns="2">
-                        <h:outputText value="Total de Produtos vendidos: " />
+                        <h:outputText value="Produtos vendidos: " />
                         <h:outputText value="#{relatorioBean.produtosVendidosGeral}" />
 
-                        <h:outputText value="Total de Geral: " />
+                        <h:outputText value="Total Geral: " />
                         <h:outputText value="R$: #{relatorioBean.totalGeral}" />
                     </h:panelGrid>  
                 </p:panelGrid>
             </h:panelGrid>
 
-            <p:chart type="pie" model="#{chartRelatorioBean.pieVendasFinalizadas}" style="width:400px;height:300px"/>
+            <p:chart type="pie" model="#{relatorioBean.pieVendasFinalizadasGeral}" style="width:400px;height:300px"/>
         </h:panelGrid>
+
+        <span class="clearFull div20"/>
+        <p:separator />
+        <span class="clearFull div20"/>
+
+        <h:panelGrid id="relatorio_periodo" columns="2">
+            <h:panelGrid>
+                <p:panelGrid columns="1">
+                    <f:facet name="header">
+                        <h3>Período</h3>
+                        <p:separator />
+                        <span class="clearFull div10"/>
+                        <h:form>
+                            <p:spacer width="10" height="10" />
+                            <h:outputLabel value="Início" />
+                            <p:spacer width="140" height="10" />
+                            <h:outputLabel value="Final" />
+                            <p:spacer width="50" height="10"/>
+                            <br/> 
+                            <p:calendar  value="#{relatorioBean.dataInicial}" pattern="dd/MM/yyyy HH:mm:ss" locale="pt" navigator="true" effect="explode"/>
+                            <p:spacer width="10" height="10"/>
+                            <p:calendar value="#{relatorioBean.dataFinal}" pattern="dd/MM/yyyy HH:mm:ss" locale="pt" navigator="true" effect="explode"/>
+                            <p:spacer width="10" height="10"/>
+                            <p:commandButton ajax="false" action="#{relatorioBean.atualizaRelatorioPeriodo()}" update=":relatorio_periodo" icon="ui-icon-check" />
+                        </h:form>
+                        <span class="clearFull div20"/>
+                    </f:facet>
+                    <h:form>
+                        <p:dataTable var="relatorio" value="#{relatorioBean.relatorioCollectionPeriodo}" emptyMessage="Nenhuma venda realizada neste período." > 
+                            <p:column headerText="Categoria" style="text-align: center;">  
+                                <h:outputText value="#{relatorio.categoria}" />  
+                            </p:column> 
+                            <p:column headerText="Produtos vendidos" style="text-align: center;">  
+                                <h:outputText value="#{relatorio.produtosVendidos}" />  
+                            </p:column> 
+                            <p:column headerText="Total" style="text-align: center;">  
+                                <h:outputText value="R$: #{relatorio.total}" />  
+                            </p:column> 
+                        </p:dataTable>
+                    </h:form>
+
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Produtos vendidos: " />
+                        <h:outputText value="#{relatorioBean.produtosVendidosPeriodo}" />
+
+                        <h:outputText value="Total: " />
+                        <h:outputText value="R$: #{relatorioBean.totalPeriodo}" />
+                    </h:panelGrid>  
+                </p:panelGrid>
+            </h:panelGrid>
+
+            <p:chart type="pie" model="#{relatorioBean.pieVendasFinalizadasPeriodo}" style="width:400px;height:300px"/>
+        </h:panelGrid>
+
     </ui:define>
 
 </ui:composition>

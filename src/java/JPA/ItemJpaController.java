@@ -191,13 +191,46 @@ public class ItemJpaController implements Serializable {
         }
     }
 
-    public List<Item> findItemEntitiesByEventoWithVendaPagaAndCategoria(Evento evento, Categoria categoria) {
+    public List<Item> findItemEntitiesByProduto(Produto produto) {
         EntityManager em = getEntityManager();
 
         try {
-            Query query = em.createNamedQuery("Item.findByEventoWithVendaPagaAndCategoria");
+            Query query = em.createNamedQuery("Item.findByProduto");
+            query.setParameter("produtoId", produto);
+            return (List<Item>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Item> findItemEventoCategoriaPago(Evento evento, Categoria categoria) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Item.findItemEventoCategoriaPago");
             query.setParameter("categoriaId", categoria);
             query.setParameter("eventoId", evento);
+            return (List<Item>) query.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Item> EventoCategoriaPeriodoPago(Evento evento, Categoria categoria, java.util.Date inicio, java.util.Date fim) {
+        EntityManager em = getEntityManager();
+
+        try {
+            Query query = em.createNamedQuery("Item.findEventoCategoriaPeriodoPago");
+            query.setParameter("categoriaId", categoria);
+            query.setParameter("eventoId", evento);
+            query.setParameter("dataInicial", inicio);
+            query.setParameter("dataFinal", fim);
             return (List<Item>) query.getResultList();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);

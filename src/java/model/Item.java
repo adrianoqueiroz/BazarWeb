@@ -25,8 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+    @NamedQuery(name = "Item.findByProduto", query = "SELECT i FROM Item i WHERE i.produtoId = :produtoId"),
     @NamedQuery(name = "Item.findByEventoWithVendaPaga", query = "SELECT i FROM Item i WHERE i.vendaId.eventoId = :eventoId AND i.vendaId.pago = TRUE"),
-    @NamedQuery(name = "Item.findByEventoWithVendaPagaAndCategoria", query = "SELECT i FROM Item i WHERE i.vendaId.eventoId = :eventoId AND i.vendaId.pago = TRUE AND i.produtoId.categoriaId = :categoriaId"),
+    @NamedQuery(name = "Item.findItemEventoCategoriaPago", query = "SELECT i FROM Item i WHERE i.vendaId.eventoId = :eventoId AND i.produtoId.categoriaId = :categoriaId AND i.vendaId.pago = TRUE"),
+    @NamedQuery(name = "Item.findEventoCategoriaPeriodoPago", query = "SELECT i FROM Item i WHERE i.vendaId.eventoId = :eventoId AND i.vendaId.pago = TRUE AND i.produtoId.categoriaId = :categoriaId AND i.vendaId.dataVenda BETWEEN :dataInicial AND :dataFinal"),
     @NamedQuery(name = "Item.findByQuantidade", query = "SELECT i FROM Item i WHERE i.quantidade = :quantidade"),
     @NamedQuery(name = "Item.findByDesconto", query = "SELECT i FROM Item i WHERE i.desconto = :desconto"),
     @NamedQuery(name = "Item.findByPrecoVenda", query = "SELECT i FROM Item i WHERE i.precoVenda = :precoVenda")})

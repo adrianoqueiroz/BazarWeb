@@ -15,7 +15,7 @@
                 
                 <h:form>
                     <p:dataTable var="venda" value="#{vendaBean.listaVendasNaoPagas}" rowKey="#{venda.id}" sortBy="#{venda.id}" paginator="true" rows="10"  
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
+                                 emptyMessage="Nenhuma venda aguardando pagamento." paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"> 
                         <p:column headerText="Código" sortBy="#{venda.id}" style="text-align: center;">  
                             <h:outputText value="#{venda.id}" />  
                         </p:column> 
@@ -38,7 +38,7 @@
                         </p:column> 
                         -->
                         <p:column headerText="Total" style="text-align: center;">  
-                            <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
+                            <h:outputText value="R$#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column>
                         <p:column style="text-align: center;">
                             <p:commandButton action="#{reciboBean.selecionaRecibo(venda)}" icon="ui-icon-search" title="Recibo"/> 

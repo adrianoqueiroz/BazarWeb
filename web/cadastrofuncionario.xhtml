@@ -15,7 +15,7 @@
             <h:outputLabel value="Email: " />  
             <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.email}"/>
             <h:outputLabel value="Telefone: " />  
-            <p:inputText style="width:350px;" value="#{funcionarioBean.funcionario.telefone}"/>
+            <p:inputMask style="width:350px;" value="#{funcionarioBean.funcionario.telefone}" mask="(99) 9999-9999?9" />
 
             <h:outputText value="Sexo: " />  
             <h:panelGrid columns="2" cellpadding="5">  
@@ -35,9 +35,15 @@
                 <f:selectItem itemLabel="Selecione um Perfil..."/>
                 <f:selectItems value="#{funcionarioBean.selectItemPerfis}" />
             </p:selectOneMenu>
-            
-            <p:commandButton ajax="false" value="Cancelar" oncomplete="PF('cadFuncionario').hide();" />
-            <p:commandButton ajax="false" value="Salvar" actionListener="#{funcionarioBean.create()}"/>
+
         </h:panelGrid>
+
+        <span class="clearFull div10"/>
+        <p:separator />
+        <span class="clearFull div10"/>
+
+        <div align="right">
+            <p:commandButton ajax="false" value="Cadastrar" actionListener="#{funcionarioBean.create()}" icon="ui-icon-check"/>
+        </div>
     </h:form>
 </html> 

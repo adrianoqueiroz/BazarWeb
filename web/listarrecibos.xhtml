@@ -7,7 +7,7 @@
 
     <ui:define name="conteudo">
         <div id="area_venda">
-            <p:panel header="Vendas Concluídas">
+            <p:panel header="Recibos de Vendas Concluídas">
                 <h:form>
                     <p:inputText placeholder="Buscar por código" id="codigo" value="#{reciboBean.idProcurado}" required="true" requiredMessage="Digite o código da venda!"/>
                     <p:commandButton ajax="false" action="#{reciboBean.selecionaRecibo()}" update="carrinhoCompras growl" icon="ui-icon-check"  />
@@ -38,7 +38,7 @@
                         </p:column> 
                         -->
                         <p:column headerText="Total" style="text-align: center;">  
-                            <h:outputText value="#{vendaBean.calculaValorTotal(venda)}" />  
+                            <h:outputText value="R$#{vendaBean.calculaValorTotal(venda)}" />  
                         </p:column>
                         <p:column style="text-align: center;">
                             <p:commandButton action="#{reciboBean.selecionaRecibo(venda)}" icon="ui-icon-search" title="Recibo"/> 
